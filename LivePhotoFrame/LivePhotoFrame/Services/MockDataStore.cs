@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using LivePhotoFrame.Models;
 
-[assembly: Xamarin.Forms.Dependency(typeof(LivePhotoFrame.Services.MockDataStore))]
 namespace LivePhotoFrame.Services
 {
     public class MockDataStore : IDataStore<Item>

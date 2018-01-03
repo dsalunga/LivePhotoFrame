@@ -1,7 +1,6 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-using Xamarin.Forms;
+using LivePhotoFrame.Helpers;
 
 namespace LivePhotoFrame.ViewModels
 {
@@ -11,7 +10,7 @@ namespace LivePhotoFrame.ViewModels
         {
             Title = "About";
 
-            OpenWebCommand = new Command(() => Device.OpenUri(new Uri("https://xamarin.com/platform")));
+            OpenWebCommand = new Command(() => Plugin.Share.CrossShare.Current.OpenBrowser("https://xamarin.com/platform"));
         }
 
         public ICommand OpenWebCommand { get; }
