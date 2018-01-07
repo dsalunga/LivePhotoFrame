@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -8,6 +9,7 @@ using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -31,17 +33,83 @@ namespace LivePhotoFrame.UWP.Views
             this.InitializeComponent();
         }
 
+        protected async override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 1);
+        }
+
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
+            Window.Current.CoreWindow.PointerCursor = null;
+            this.DoubleTapped += (sender, doubleTappedRoutedEventArgs) =>
+            {
+                this.Frame.GoBack();
+            };
+
+            // Attach to key inputs event
+            Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
+
+            /*var myPictures = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
+            IObservableVector<StorageFolder> myPictureFolders = myPictures.Folders;
+            foreach(var folder in myPictureFolders)
+            {
+                Debug.WriteLine(folder.Path);
+            }*/
+
+            /*StorageFolder installedLocation = Windows.ApplicationModel.Package.Current.InstalledLocation;
+
+            StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+            var files = await storageFolder.GetFilesAsync();
+            var file = files.FirstOrDefault();*/
+
+            //https://xamarin.com/content/images/pages/forms/example-app.png
+            //ms-appx:///Assets/pigs.jpg
+            //  same as
+            //  installedLocation.Path + @"\Assets\pigs.jpg"
+            //storageFolder.Path + @"\pigs.jpg"
+
             BitmapImage bitmapImage = new BitmapImage();
+            //bitmapImage.UriSource = new Uri(installedLocation.Path + @"\Assets\pigs.jpg");
 
-            /*bitmapImage.UriSource = new Uri("https://xamarin.com/content/images/pages/forms/example-app.png");
-            image.Source = bitmapImage;*/
+            // Photos from Picture Library are not accessible via UriSource, it has to be via Stream.
+            //var file = await StorageFile.GetFileFromPathAsync(myPictures.SaveFolder.Path + @"\LivePhotoFrame\Others\pigs.jpg");
 
+            var basePath = @"D:\Pictures\LivePhotoFrame";
+            var folder = await StorageFolder.GetFolderFromPathAsync(basePath + @"\Albums\Current\");
+            var files = await folder.GetFilesAsync();
+            if (files.Count > 1)
+            {
+                var fileIndex = 0;
+                async void displayImage()
+                {
+                    var file = files[fileIndex];
+                    //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
+                    var stream = await file.OpenReadAsync();
+                    await bitmapImage.SetSourceAsync(stream);
+                    image.Source = bitmapImage;
 
-            FileOpenPicker openPicker = new FileOpenPicker();
+                    fileIndex++;
+                    if (fileIndex >= files.Count)
+                    {
+                        fileIndex = 0;
+                    }
+                }
+                displayImage();
+
+                var timer = new DispatcherTimer
+                {
+                    Interval = new TimeSpan(0, 1, 0)
+                };
+                timer.Tick += (object sender, object args) =>
+                {
+                    displayImage();
+                };
+                timer.Start();
+            }
+
+            /*FileOpenPicker openPicker = new FileOpenPicker();
             openPicker.ViewMode = PickerViewMode.Thumbnail;
             openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
             openPicker.FileTypeFilter.Add(".jpg");
@@ -62,7 +130,17 @@ namespace LivePhotoFrame.UWP.Views
                     await bitmapImage.SetSourceAsync(fileStream);
                     image.Source = bitmapImage;
                 }
-            }
+            }*/
+        }
+
+        private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
+        {
+            // KeyCode 27 = Escape key
+            if (args.KeyCode != 27) return;
+
+            // Detatch from key inputs event
+            Window.Current.CoreWindow.CharacterReceived -= CoreWindow_CharacterReceived;
+            this.Frame.GoBack();
         }
     }
 }

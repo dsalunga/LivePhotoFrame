@@ -18,10 +18,10 @@ namespace LivePhotoFrame.Services
             {
                 new Item { Id = "Launch", Text = "Live Photo Frame", Description="Launch the Live Photo Frame." },
                 new Item { Id = "Settings", Text = "Settings", Description="Configure Live Photo Frame settings." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Third item", Description="This is an item description." },
+                /*new Item { Id = Guid.NewGuid().ToString(), Text = "Third item", Description="This is an item description." },
                 new Item { Id = Guid.NewGuid().ToString(), Text = "Fourth item", Description="This is an item description." },
                 new Item { Id = Guid.NewGuid().ToString(), Text = "Fifth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Sixth item", Description="This is an item description." },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Sixth item", Description="This is an item description." },*/
             };
 
             foreach (var item in mockItems)
