@@ -51,6 +51,9 @@ namespace LivePhotoFrame.UWP.Views
             // Attach to key inputs event
             Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 
+            BitmapImage bitmapImage = new BitmapImage();
+            //bitmapImage.UriSource = new Uri(installedLocation.Path + @"\Assets\pigs.jpg");
+
             /*var myPictures = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
             IObservableVector<StorageFolder> myPictureFolders = myPictures.Folders;
             foreach(var folder in myPictureFolders)
@@ -69,9 +72,6 @@ namespace LivePhotoFrame.UWP.Views
             //  same as
             //  installedLocation.Path + @"\Assets\pigs.jpg"
             //storageFolder.Path + @"\pigs.jpg"
-
-            BitmapImage bitmapImage = new BitmapImage();
-            //bitmapImage.UriSource = new Uri(installedLocation.Path + @"\Assets\pigs.jpg");
 
             // Photos from Picture Library are not accessible via UriSource, it has to be via Stream.
             //var file = await StorageFile.GetFileFromPathAsync(myPictures.SaveFolder.Path + @"\LivePhotoFrame\Others\pigs.jpg");
@@ -108,6 +108,7 @@ namespace LivePhotoFrame.UWP.Views
                 };
                 timer.Start();
             }
+
 
             /*FileOpenPicker openPicker = new FileOpenPicker();
             openPicker.ViewMode = PickerViewMode.Thumbnail;
