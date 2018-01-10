@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LivePhotoFrame.UWP.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -76,24 +77,18 @@ namespace LivePhotoFrame.UWP.Views
             // Photos from Picture Library are not accessible via UriSource, it has to be via Stream.
             //var file = await StorageFile.GetFileFromPathAsync(myPictures.SaveFolder.Path + @"\LivePhotoFrame\Others\pigs.jpg");
 
-            var basePath = @"D:\Pictures\LivePhotoFrame";
-            var folder = await StorageFolder.GetFolderFromPathAsync(basePath + @"\Albums\Current\");
-            var files = await folder.GetFilesAsync();
-            if (files.Count > 1)
+            FileSystemPhotoProvider provider = new FileSystemPhotoProvider();
+            await provider.Init();
+            if (provider.Count > 0)
             {
-                var fileIndex = 0;
                 async void displayImage()
                 {
-                    var file = files[fileIndex];
                     //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
-                    var stream = await file.OpenReadAsync();
-                    await bitmapImage.SetSourceAsync(stream);
-                    image.Source = bitmapImage;
-
-                    fileIndex++;
-                    if (fileIndex >= files.Count)
+                    var stream = await provider.NextStream();
+                    if (stream != null)
                     {
-                        fileIndex = 0;
+                        await bitmapImage.SetSourceAsync(stream);
+                        image.Source = bitmapImage;
                     }
                 }
                 displayImage();
