@@ -8,7 +8,7 @@ using Windows.Storage.Streams;
 
 namespace LivePhotoFrame.UWP.Models
 {
-    class FileSystemPhotoProvider
+    class FileSystemPhotoProvider : IPhotoProvider
     {
         IReadOnlyList<StorageFile> files;
         int fileIndex = 0;
@@ -32,7 +32,7 @@ namespace LivePhotoFrame.UWP.Models
             }
         }
 
-        public async Task<IRandomAccessStreamWithContentType> NextStream()
+        public async Task<IRandomAccessStream> NextStream()
         {
             if(files.Count > 0)
             {
@@ -50,6 +50,11 @@ namespace LivePhotoFrame.UWP.Models
             }
 
             return null;
+        }
+
+        public void Done()
+        {
+
         }
     }
 }

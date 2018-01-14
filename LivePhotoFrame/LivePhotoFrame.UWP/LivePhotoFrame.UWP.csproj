@@ -96,6 +96,8 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\FtpPhotoProvider.cs" />
+    <Compile Include="Models\IPhotoProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\AddItems.xaml.cs">
       <DependentUpon>AddItems.xaml</DependentUpon>
