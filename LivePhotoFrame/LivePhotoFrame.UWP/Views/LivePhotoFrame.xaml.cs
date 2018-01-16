@@ -10,6 +10,7 @@ using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -45,7 +46,8 @@ namespace LivePhotoFrame.UWP.Views
         private void GoBack()
         {
             // Detatch from key inputs event
-            Window.Current.CoreWindow.CharacterReceived -= CoreWindow_CharacterReceived;
+            //Window.Current.CoreWindow.CharacterReceived -= CoreWindow_CharacterReceived;
+            Window.Current.CoreWindow.KeyUp -= CoreWindow_KeyUp;
 
             timer.Stop();
             if(provider != null)
@@ -59,19 +61,18 @@ namespace LivePhotoFrame.UWP.Views
         {
             base.OnNavigatedTo(e);
 
-            Debug.WriteLine("OnNavigatedTo");
-
             Window.Current.CoreWindow.PointerCursor = null;
 
             this.DoubleTapped += LivePhotoFrame_DoubleTapped;
             //this.Tapped += LivePhotoFrame_Tapped;
 
             // Attach to key inputs event
-            Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
+            //Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
+            Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
 
-            image.ManipulationDelta += LivePhotoFrame_ManipulationDelta;
-            image.ManipulationCompleted += LivePhotoFrame_ManipulationCompleted;
-            image.ManipulationStarted += LivePhotoFrame_ManipulationStarted;
+            this.ManipulationDelta += LivePhotoFrame_ManipulationDelta;
+            this.ManipulationCompleted += LivePhotoFrame_ManipulationCompleted;
+            this.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateInertia | ManipulationModes.System;
 
             //bitmapImage.UriSource = new Uri(installedLocation.Path + @"\Assets\pigs.jpg");
 
@@ -104,10 +105,8 @@ namespace LivePhotoFrame.UWP.Views
             {
                 DisplayImage();
 
-                timer = new DispatcherTimer
-                {
-                    Interval = new TimeSpan(0, 1, 0)
-                };
+                timer = new DispatcherTimer();
+                timer.Interval = new TimeSpan(0, 1, 0);
                 timer.Tick += (object sender, object args) =>
                 {
                     DisplayImage();
@@ -140,30 +139,45 @@ namespace LivePhotoFrame.UWP.Views
             }*/
         }
 
-        private Point initialpoint;
-
-        private void LivePhotoFrame_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
         {
-            Debug.WriteLine("LivePhotoFrame_ManipulationStarted");
-            initialpoint = e.Position;
+            switch(args.VirtualKey)
+            {
+                case VirtualKey.Escape:
+                    GoBack();
+                    break;
+
+                case VirtualKey.Left:
+                case VirtualKey.Right:
+                    DisplayImage();
+                    break;
+            }
         }
+
+        private bool isSwiped;
 
         private void LivePhotoFrame_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            Debug.WriteLine("LivePhotoFrame_ManipulationCompleted");
+            isSwiped = false;
         }
 
         private void LivePhotoFrame_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            Debug.WriteLine("LivePhotoFrame_ManipulationDelta");
-            if (e.IsInertial)
+            if (e.IsInertial && !isSwiped)
             {
-                Point currentpoint = e.Position;
-                if (currentpoint.X - initialpoint.X >= 500) // 500 is the threshold value, where you want to trigger the swipe right event
+                var swipedDistance = e.Cumulative.Translation.X;
+                if (Math.Abs(swipedDistance) <= 2) return;
+                if (swipedDistance > 0)
                 {
+                    // Right
                     DisplayImage();
-                    e.Complete();
                 }
+                else
+                {
+                    // Left
+                    DisplayImage();
+                }
+                isSwiped = true;
             }
         }
 
@@ -190,12 +204,29 @@ namespace LivePhotoFrame.UWP.Views
             DisplayImage();
         }*/
 
+
+
+        // Refer to https://github.com/mixer/uwp-keycodes/blob/master/index.ts
+        /*class Keys
+        {
+            public const uint Escape = 27;
+            public const uint LeftArrow = 37;
+            public const uint RightArrow = 39;
+        }
+        
         private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
         {
-            // KeyCode 27 = Escape key
-            if (args.KeyCode != 27) return;
+            switch(args.KeyCode)
+            {
+                case Keys.Escape:
+                    GoBack();
+                    break;
 
-            GoBack();
-        }
+                case Keys.LeftArrow:
+                case Keys.RightArrow:
+                    DisplayImage();
+                    break;
+            }
+        }*/
     }
 }

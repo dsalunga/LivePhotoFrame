@@ -19,6 +19,7 @@ namespace LivePhotoFrame.UWP.Models
 
         public async Task Init()
         {
+            // works with $> mklink /j junctiondirname junctiontargetdir
             var basePath = @"D:\Pictures\LivePhotoFrame";
             var folder = await StorageFolder.GetFolderFromPathAsync(basePath + @"\Albums\Current\");
             files = await folder.GetFilesAsync();
