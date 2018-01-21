@@ -7,7 +7,7 @@ namespace LivePhotoFrame.UWP.Models
     {
         int Count { get; }
 
-        Task Init();
+        Task Initialize();
         Task<IRandomAccessStream> NextStream();
 
         void Done();

@@ -98,15 +98,25 @@ namespace LivePhotoFrame.UWP.Views
             // Photos from Picture Library are not accessible via UriSource, it has to be via Stream.
             //var file = await StorageFile.GetFileFromPathAsync(myPictures.SaveFolder.Path + @"\LivePhotoFrame\Others\pigs.jpg");
 
-            provider = new FileSystemPhotoProvider();
+            var config = AppConfigManager.GetInstance().GetConfig();
+            switch (config.ActiveSource)
+            {
+                case FtpPhotoProvider.TAG:
+                    provider = new FtpPhotoProvider();
+                    break;
+
+                case FileSystemPhotoProvider.TAG:
+                    provider = new FileSystemPhotoProvider();
+                    break;
+            }
             //provider = new FtpPhotoProvider();
-            await provider.Init();
+            await provider.Initialize();
             if (provider.Count > 0)
             {
                 DisplayImage();
 
                 timer = new DispatcherTimer();
-                timer.Interval = new TimeSpan(0, 1, 0);
+                timer.Interval = new TimeSpan(0, config.Interval, 0);
                 timer.Tick += (object sender, object args) =>
                 {
                     DisplayImage();

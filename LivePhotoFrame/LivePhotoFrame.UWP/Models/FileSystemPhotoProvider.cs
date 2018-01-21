@@ -10,6 +10,8 @@ namespace LivePhotoFrame.UWP.Models
 {
     class FileSystemPhotoProvider : IPhotoProvider
     {
+        public const string TAG = "FileSystem";
+
         IReadOnlyList<StorageFile> files;
         int fileIndex = 0;
 
@@ -17,11 +19,12 @@ namespace LivePhotoFrame.UWP.Models
         {
         }
 
-        public async Task Init()
+        public async Task Initialize()
         {
+            var config = AppConfigManager.GetInstance().GetConfig();
+
             // works with $> mklink /j junctiondirname junctiontargetdir
-            var basePath = @"D:\Pictures\LivePhotoFrame";
-            var folder = await StorageFolder.GetFolderFromPathAsync(basePath + @"\Albums\Current\");
+            var folder = await StorageFolder.GetFolderFromPathAsync(config.FileSystemPath);
             files = await folder.GetFilesAsync();
         }
 

@@ -46,6 +46,7 @@ namespace LivePhotoFrame.UWP.Views
                     this.Frame.Navigate(typeof(LivePhotoFrame), item);
                     break;
                 case "Settings":
+                    this.Frame.Navigate(typeof(Settings));
                     break;
                 default:
                     this.Frame.Navigate(typeof(BrowseItemDetail), item);

@@ -1,0 +1,72 @@
+﻿<Page
+    x:Class="LivePhotoFrame.UWP.Views.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{StaticResource PrimaryColor}">
+
+    <Page.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,10"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,10"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+        <Style TargetType="RadioButton">
+            <Setter Property="Margin" Value="0,10"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Border  Grid.Row="0" Background="{StaticResource PrimaryColor}" Padding="10">
+            <TextBlock x:Name="txtTitle" Text="Settings" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
+        </Border>
+
+        <StackPanel Grid.Row="1" Padding="10">
+            <TextBlock Text="FTP Server" MaxHeight="120" />
+            <TextBox x:Name="txtFtpHostname" Header="Hostname" PlaceholderText="Hostname" MaxHeight="120" />
+            <TextBox x:Name="txtFtpPath" Header="Path" PlaceholderText="Path" MaxHeight="120" />
+            <TextBox x:Name="txtUsername" Header="Username" PlaceholderText="Username" MaxHeight="120" />
+            <TextBox x:Name="txtPassword" Header="Password" PlaceholderText="Password" MaxHeight="120" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Padding="10">
+            <TextBlock Text="File System" MaxHeight="120" />
+            <TextBox x:Name="txtFileSystemPath" Header="Path" PlaceholderText="Album directory path" MaxHeight="120" />
+        </StackPanel>
+        
+        <StackPanel Grid.Row="3" Padding="10">
+            <TextBlock Text="Active Source" MaxHeight="120" />
+            <RadioButton Name="radioFtp" Content="FTP" GroupName="ActiveSource" Tag="FTP" Checked="ActiveSourceRadioButton_Checked"/>
+            <RadioButton Name="radioFileSystem" Content="File System" GroupName="ActiveSource" Tag="FileSystem" Checked="ActiveSourceRadioButton_Checked" />
+            <TextBox x:Name="txtInterval" Header="Interval" PlaceholderText="Interval in minutes" MaxHeight="120" />
+        </StackPanel>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="Save" Icon="Save" Click="SaveItem_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

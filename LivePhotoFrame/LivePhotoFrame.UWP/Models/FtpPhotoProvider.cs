@@ -18,12 +18,16 @@ namespace LivePhotoFrame.UWP.Models
 
         public int Count => items != null ? items.Length : 0;
 
-        public async Task Init()
+        public const string TAG = "FTP";
+
+        public async Task Initialize()
         {
-            client = new FtpClient("ftphostname", "username", "password");
+            var config = AppConfigManager.GetInstance().GetConfig();
+
+            client = new FtpClient(config.FtpConfig.Hostname, config.FtpConfig.Username, config.FtpConfig.Password);
             client.Connect();
 
-            items = await client.GetListingAsync("/Albums/Current/");
+            items = await client.GetListingAsync(config.FtpConfig.Path);
         }
 
         public async Task<IRandomAccessStream> NextStream()
