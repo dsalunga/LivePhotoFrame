@@ -25,44 +25,46 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.ChildrenTransitions>
-            <TransitionCollection>
-                <EntranceThemeTransition/>
-            </TransitionCollection>
-        </Grid.ChildrenTransitions>
+    <ScrollViewer>
+        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Grid.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition/>
+                </TransitionCollection>
+            </Grid.ChildrenTransitions>
         
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
         
-        <Border  Grid.Row="0" Background="{StaticResource PrimaryColor}" Padding="10">
-            <TextBlock x:Name="txtTitle" Text="Settings" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
-        </Border>
+            <Border  Grid.Row="0" Background="{StaticResource PrimaryColor}" Padding="10">
+                <TextBlock x:Name="txtTitle" Text="Settings" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
+            </Border>
 
-        <StackPanel Grid.Row="1" Padding="10">
-            <TextBlock Text="FTP Server" MaxHeight="120" />
-            <TextBox x:Name="txtFtpHostname" Header="Hostname" PlaceholderText="Hostname" MaxHeight="120" />
-            <TextBox x:Name="txtFtpPath" Header="Path" PlaceholderText="Path" MaxHeight="120" />
-            <TextBox x:Name="txtUsername" Header="Username" PlaceholderText="Username" MaxHeight="120" />
-            <TextBox x:Name="txtPassword" Header="Password" PlaceholderText="Password" MaxHeight="120" />
-        </StackPanel>
+            <StackPanel Grid.Row="1" Padding="10">
+                <TextBlock Text="FTP Server" MaxHeight="120" />
+                <TextBox x:Name="txtFtpHostname" Header="Hostname" PlaceholderText="Hostname" MaxHeight="120" />
+                <TextBox x:Name="txtFtpPath" Header="Path" PlaceholderText="Path" MaxHeight="120" />
+                <TextBox x:Name="txtUsername" Header="Username" PlaceholderText="Username" MaxHeight="120" />
+                <TextBox x:Name="txtPassword" Header="Password" PlaceholderText="Password" MaxHeight="120" />
+            </StackPanel>
 
-        <StackPanel Grid.Row="2" Padding="10">
-            <TextBlock Text="File System" MaxHeight="120" />
-            <TextBox x:Name="txtFileSystemPath" Header="Path" PlaceholderText="Album directory path" MaxHeight="120" />
-        </StackPanel>
+            <StackPanel Grid.Row="2" Padding="10">
+                <TextBlock Text="File System" MaxHeight="120" />
+                <TextBox x:Name="txtFileSystemPath" Header="Path" PlaceholderText="Album directory path" MaxHeight="120" />
+            </StackPanel>
         
-        <StackPanel Grid.Row="3" Padding="10">
-            <TextBlock Text="Active Source" MaxHeight="120" />
-            <RadioButton Name="radioFtp" Content="FTP" GroupName="ActiveSource" Tag="FTP" Checked="ActiveSourceRadioButton_Checked"/>
-            <RadioButton Name="radioFileSystem" Content="File System" GroupName="ActiveSource" Tag="FileSystem" Checked="ActiveSourceRadioButton_Checked" />
-            <TextBox x:Name="txtInterval" Header="Interval" PlaceholderText="Interval in minutes" MaxHeight="120" />
-        </StackPanel>
-    </Grid>
+            <StackPanel Grid.Row="3" Padding="10">
+                <TextBlock Text="Active Source" MaxHeight="120" />
+                <RadioButton Name="radioFtp" Content="FTP" GroupName="ActiveSource" Tag="FTP" Checked="ActiveSourceRadioButton_Checked"/>
+                <RadioButton Name="radioFileSystem" Content="File System" GroupName="ActiveSource" Tag="FileSystem" Checked="ActiveSourceRadioButton_Checked" />
+                <TextBox x:Name="txtInterval" Header="Interval" PlaceholderText="Interval in minutes" MaxHeight="120" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 
     <Page.BottomAppBar>
         <CommandBar>

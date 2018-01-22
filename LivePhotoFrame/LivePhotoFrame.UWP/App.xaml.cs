@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -75,8 +76,11 @@ namespace LivePhotoFrame.UWP
 					// parameter
 					rootFrame.Navigate(typeof(Views.MainPivot), e.Arguments);
 				}
-				// Ensure the current window is active
-				Window.Current.Activate();
+
+                ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
+
+                // Ensure the current window is active
+                Window.Current.Activate();
 			}
 		}
 
