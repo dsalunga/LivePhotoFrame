@@ -21,6 +21,7 @@
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <HockeyAppResourceId>9da0e35d7bf041c29e5c7fee1fda73b4</HockeyAppResourceId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -95,6 +96,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\DeviceHelpers.cs" />
     <Compile Include="Models\AppConfig.cs" />
     <Compile Include="Models\FileSystemPhotoProvider.cs" />
     <Compile Include="MainPage.xaml.cs">

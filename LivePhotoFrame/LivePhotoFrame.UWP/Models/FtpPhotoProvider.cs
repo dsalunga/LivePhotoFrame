@@ -1,4 +1,5 @@
 ﻿using FluentFTP;
+using LivePhotoFrame.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,14 +29,21 @@ namespace LivePhotoFrame.UWP.Models
             client.Connect();
 
             items = await client.GetListingAsync(config.FtpConfig.Path);
+            items.Shuffle();
+
+            client.Disconnect();
         }
 
         public async Task<IRandomAccessStream> NextStream()
         {
             if (items.Length > 0)
             {
-                var file = items[fileIndex];
+                if(!client.IsConnected)
+                {
+                    client.Connect();
+                }
 
+                var file = items[fileIndex];
                 Stream stream = await client.OpenReadAsync(file.FullName);
 
                 // Create a .NET memory stream.
@@ -52,6 +60,8 @@ namespace LivePhotoFrame.UWP.Models
                 {
                     fileIndex = 0;
                 }
+
+                client.Disconnect();
 
                 return memStream.AsRandomAccessStream();
             }

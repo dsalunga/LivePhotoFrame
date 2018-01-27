@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Navigation;
 using LivePhotoFrame.Models;
 using LivePhotoFrame.ViewModels;
 using LivePhotoFrame.UWP.Models;
+using LivePhotoFrame.UWP.Helpers;
 
 namespace LivePhotoFrame.UWP.Views
 {

@@ -6,13 +6,15 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
+using LivePhotoFrame.Helpers;
+
 namespace LivePhotoFrame.UWP.Models
 {
     class FileSystemPhotoProvider : IPhotoProvider
     {
         public const string TAG = "FileSystem";
 
-        IReadOnlyList<StorageFile> files;
+        List<StorageFile> files;
         int fileIndex = 0;
 
         public FileSystemPhotoProvider()
@@ -25,7 +27,9 @@ namespace LivePhotoFrame.UWP.Models
 
             // works with $> mklink /j junctiondirname junctiontargetdir
             var folder = await StorageFolder.GetFolderFromPathAsync(config.FileSystemPath);
-            files = await folder.GetFilesAsync();
+            var storageFiles = await folder.GetFilesAsync();
+            files = new List<StorageFile>(storageFiles);
+            files.Shuffle();
         }
 
         public int Count
