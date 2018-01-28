@@ -49,9 +49,7 @@ namespace LivePhotoFrame.UWP.Models
 
                 fileIndex++;
                 if (fileIndex >= files.Count)
-                {
                     fileIndex = 0;
-                }
                 //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
                 
                 return stream;

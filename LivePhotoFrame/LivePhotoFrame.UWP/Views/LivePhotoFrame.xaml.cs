@@ -5,13 +5,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.System.Display;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -31,8 +34,12 @@ namespace LivePhotoFrame.UWP.Views
     /// </summary>
     public sealed partial class LivePhotoFrame : Page
     {
+        DisplayRequest displayRequest;
         IPhotoProvider provider;
         DispatcherTimer timer;
+        AppConfig config;
+        int totalIdleTime = 0; // in minutes
+        int maxIdleTime = 60 * 4; // 4 hrs idle
 
         public LivePhotoFrame()
         {
@@ -50,12 +57,14 @@ namespace LivePhotoFrame.UWP.Views
             //Window.Current.CoreWindow.CharacterReceived -= CoreWindow_CharacterReceived;
             Window.Current.CoreWindow.KeyUp -= CoreWindow_KeyUp;
 
-            timer.Stop();
-            if(provider != null)
-            {
+            if (timer != null)
+                timer.Stop();
+            if (provider != null)
                 provider.Done();
-            }
-            this.Frame.GoBack();
+            if(displayRequest != null)
+                displayRequest.RequestRelease();
+
+            Frame.GoBack();
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -63,9 +72,7 @@ namespace LivePhotoFrame.UWP.Views
             base.OnNavigatedTo(e);
 
             if (!ApplicationView.GetForCurrentView().IsFullScreenMode)
-            {
                 ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
-            }
 
             Window.Current.CoreWindow.PointerCursor = null;
 
@@ -104,7 +111,7 @@ namespace LivePhotoFrame.UWP.Views
             // Photos from Picture Library are not accessible via UriSource, it has to be via Stream.
             //var file = await StorageFile.GetFileFromPathAsync(myPictures.SaveFolder.Path + @"\LivePhotoFrame\Others\pigs.jpg");
 
-            var config = AppConfigManager.GetInstance().GetConfig();
+            config = AppConfigManager.GetInstance().GetConfig();
             switch (config.ActiveSource)
             {
                 case FtpPhotoProvider.TAG:
@@ -115,19 +122,34 @@ namespace LivePhotoFrame.UWP.Views
                     provider = new FileSystemPhotoProvider();
                     break;
             }
-            //provider = new FtpPhotoProvider();
-            await provider.Initialize();
+
+            try
+            {
+                await provider.Initialize();
+            }
+            catch (Exception ex)
+            {
+                await ShowErrorDialog(ex.Message);
+                return;
+            }
+
+            if(provider.Count == 1)
+            {
+                await ShowErrorDialog("Only one image is found. This is not recommended as it may cause monitor ghosting or burn-in.");
+                return;
+            }
+
             if (provider.Count > 0)
             {
                 DisplayImage();
 
                 timer = new DispatcherTimer();
                 timer.Interval = new TimeSpan(0, config.Interval, 0);
-                timer.Tick += (object sender, object args) =>
-                {
-                    DisplayImage();
-                };
+                timer.Tick += (object sender, object args) => DisplayImage();
                 timer.Start();
+
+                displayRequest = new DisplayRequest();
+                displayRequest.RequestActive();
             }
 
 
@@ -155,9 +177,18 @@ namespace LivePhotoFrame.UWP.Views
             }*/
         }
 
+        private async Task ShowErrorDialog(String errorMessage)
+        {
+            var messageDialog = new MessageDialog(errorMessage);
+            messageDialog.Commands.Add(new UICommand("OK", (command) => GoBack()));
+            messageDialog.DefaultCommandIndex = 0;
+            messageDialog.CancelCommandIndex = 0;
+            await messageDialog.ShowAsync();
+        }
+
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
         {
-            switch(args.VirtualKey)
+            switch (args.VirtualKey)
             {
                 case VirtualKey.Escape:
                     GoBack();
@@ -200,12 +231,26 @@ namespace LivePhotoFrame.UWP.Views
         private async void DisplayImage()
         {
             //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
-            var stream = await provider.NextStream();
-            if (stream != null)
+            try
             {
-                BitmapImage bitmapImage = new BitmapImage();
-                await bitmapImage.SetSourceAsync(stream);
-                image.Source = bitmapImage;
+                var stream = await provider.NextStream();
+                if (stream != null)
+                {
+                    BitmapImage bitmapImage = new BitmapImage();
+                    await bitmapImage.SetSourceAsync(stream);
+                    image.Source = bitmapImage;
+                }
+
+                totalIdleTime = 0;
+            }
+            catch (Exception e)
+            {
+                totalIdleTime += config.Interval;
+                if (totalIdleTime >= maxIdleTime)
+                {
+                    displayRequest.RequestRelease();
+                    await ShowErrorDialog(e.Message);
+                }
             }
         }
 

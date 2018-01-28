@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
@@ -30,18 +31,14 @@ namespace LivePhotoFrame.UWP.Models
 
             items = await client.GetListingAsync(config.FtpConfig.Path);
             items.Shuffle();
-
-            client.Disconnect();
         }
 
         public async Task<IRandomAccessStream> NextStream()
         {
             if (items.Length > 0)
             {
-                if(!client.IsConnected)
-                {
+                if (!client.IsConnected)
                     client.Connect();
-                }
 
                 var file = items[fileIndex];
                 Stream stream = await client.OpenReadAsync(file.FullName);
@@ -57,9 +54,7 @@ namespace LivePhotoFrame.UWP.Models
 
                 fileIndex++;
                 if (fileIndex >= items.Length)
-                {
                     fileIndex = 0;
-                }
 
                 client.Disconnect();
 
@@ -73,9 +68,7 @@ namespace LivePhotoFrame.UWP.Models
         {
             // disconnect! good bye!
             if (client != null && client.IsConnected)
-            {
                 client.Disconnect();
-            }
         }
     }
 }
