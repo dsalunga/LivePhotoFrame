@@ -13,6 +13,7 @@ namespace LivePhotoFrame.UWP.Models
         public FtpConfig FtpConfig { get; set; }
         public string FileSystemPath { get; set; }
         public string ActiveSource { get; set; }
+        public bool AutoStartShow { get; set; }
 
         /// <summary>
         /// Interval in minutes

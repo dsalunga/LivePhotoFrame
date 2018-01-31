@@ -31,6 +31,7 @@ namespace LivePhotoFrame.UWP.Views
             txtPassword.Text = config.FtpConfig.Password;
             txtFileSystemPath.Text = config.FileSystemPath;
             txtInterval.Text = config.Interval.ToString();
+            checkboxAutoStartShow.IsChecked = config.AutoStartShow;
 
             switch(config.ActiveSource)
             {
@@ -48,6 +49,7 @@ namespace LivePhotoFrame.UWP.Views
 		{
             config.FileSystemPath = txtFileSystemPath.Text.Trim();
             config.Interval = int.Parse(txtInterval.Text.Trim());
+            config.AutoStartShow = checkboxAutoStartShow.IsChecked.Value;
 
             config.FtpConfig.Hostname = txtFtpHostname.Text.Trim();
             config.FtpConfig.Path = txtFtpPath.Text.Trim();

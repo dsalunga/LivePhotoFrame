@@ -46,7 +46,7 @@ namespace LivePhotoFrame.UWP.Views
             this.InitializeComponent();
         }
 
-        protected async override void OnNavigatedFrom(NavigationEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 1);
         }
@@ -228,9 +228,14 @@ namespace LivePhotoFrame.UWP.Views
             }
         }
 
+        private bool displaying;
+
         private async void DisplayImage()
         {
             //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
+            if (displaying) return;
+            displaying = true;
+
             try
             {
                 var stream = await provider.NextStream();
@@ -252,6 +257,8 @@ namespace LivePhotoFrame.UWP.Views
                     await ShowErrorDialog(e.Message);
                 }
             }
+
+            displaying = false;
         }
 
         private void LivePhotoFrame_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)

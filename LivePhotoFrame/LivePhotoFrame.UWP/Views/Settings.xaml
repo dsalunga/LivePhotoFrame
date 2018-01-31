@@ -67,6 +67,7 @@
                 <RadioButton Name="radioFileSystem" Content="File System" GroupName="ActiveSource" Tag="FileSystem" Checked="ActiveSourceRadioButton_Checked" />
                 <TextBox x:Name="txtInterval" Header="Interval (minutes)" PlaceholderText="Interval in minutes" MaxHeight="120" />
                 <CheckBox x:Name="checkboxShuffle" Content="Shuffle" IsChecked="True" IsEnabled="False" />
+                <CheckBox x:Name="checkboxAutoStartShow" Content="Auto start show on app launch" IsChecked="False" />
             </StackPanel>
         </Grid>
     </ScrollViewer>

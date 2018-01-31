@@ -4,6 +4,8 @@ using Windows.UI.Xaml.Navigation;
 
 using LivePhotoFrame.Models;
 using LivePhotoFrame.ViewModels;
+using LivePhotoFrame.UWP.Models;
+using Windows.UI.Core;
 
 namespace LivePhotoFrame.UWP.Views
 {
@@ -11,8 +13,9 @@ namespace LivePhotoFrame.UWP.Views
 	{
 		public ItemsViewModel BrowseViewModel { get; private set; }
 		public AboutViewModel AboutViewModel { get; private set; }
+        private static bool isNewlyLaunched = true;
 
-		public MainPivot()
+        public MainPivot()
 		{
 			NavigationCacheMode = NavigationCacheMode.Required;
 
@@ -28,7 +31,21 @@ namespace LivePhotoFrame.UWP.Views
 		{
 			if (BrowseViewModel.Items.Count == 0)
 				BrowseViewModel.LoadItemsCommand.Execute(null);
-		}
+
+            if(isNewlyLaunched)
+            {
+                var config = AppConfigManager.GetInstance().GetConfig();
+                if(config.AutoStartShow)
+                {
+                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        LaunchShow();
+                    });
+                }
+            }
+
+            isNewlyLaunched = false;
+        }
 
 		public void AddItem_Click(object sender, RoutedEventArgs e)
 		{
@@ -42,8 +59,7 @@ namespace LivePhotoFrame.UWP.Views
             switch (item.Id)
             {
                 case "Launch":
-                    //await Navigation.PushModalAsync(new NavigationPage(new LivePhotoFrame()));
-                    this.Frame.Navigate(typeof(LivePhotoFrame), item);
+                    LaunchShow();
                     break;
                 case "Settings":
                     this.Frame.Navigate(typeof(Settings));
@@ -52,6 +68,12 @@ namespace LivePhotoFrame.UWP.Views
                     this.Frame.Navigate(typeof(BrowseItemDetail), item);
                     break;
             }
+        }
+
+        private void LaunchShow()
+        {
+            //await Navigation.PushModalAsync(new NavigationPage(new LivePhotoFrame()));
+            this.Frame.Navigate(typeof(LivePhotoFrame));
         }
 
 		private void PivotItemChanged(object sender, SelectionChangedEventArgs e)
