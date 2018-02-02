@@ -66,6 +66,7 @@
                 <RadioButton Name="radioFtp" Content="FTP" GroupName="ActiveSource" Tag="FTP" Checked="ActiveSourceRadioButton_Checked"/>
                 <RadioButton Name="radioFileSystem" Content="File System" GroupName="ActiveSource" Tag="FileSystem" Checked="ActiveSourceRadioButton_Checked" />
                 <TextBox x:Name="txtInterval" Header="Interval (minutes)" PlaceholderText="Interval in minutes" MaxHeight="120" />
+                <TextBox x:Name="txtMaxIdle" Header="Max Idle (minutes)" PlaceholderText="Max idle time in minutes" MaxHeight="120" />
                 <CheckBox x:Name="checkboxShuffle" Content="Shuffle" IsChecked="True" IsEnabled="False" />
                 <CheckBox x:Name="checkboxAutoStartShow" Content="Auto start show on app launch" IsChecked="False" />
             </StackPanel>

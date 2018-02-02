@@ -10,6 +10,8 @@ namespace LivePhotoFrame.UWP.Models
         Task Initialize();
         Task<IRandomAccessStream> NextStream();
 
+        Task<IRandomAccessStream> PreviousStream();
+
         void Done();
     }
 }

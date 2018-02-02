@@ -39,7 +39,6 @@ namespace LivePhotoFrame.UWP.Views
         DispatcherTimer timer;
         AppConfig config;
         int totalIdleTime = 0; // in minutes
-        int maxIdleTime = 60 * 4; // 4 hrs idle
 
         public LivePhotoFrame()
         {
@@ -195,6 +194,9 @@ namespace LivePhotoFrame.UWP.Views
                     break;
 
                 case VirtualKey.Left:
+                    DisplayImage(true);
+                    break;
+
                 case VirtualKey.Right:
                     DisplayImage();
                     break;
@@ -216,12 +218,12 @@ namespace LivePhotoFrame.UWP.Views
                 if (Math.Abs(swipedDistance) <= 2) return;
                 if (swipedDistance > 0)
                 {
-                    // Right
-                    DisplayImage();
+                    // Left to Right
+                    DisplayImage(true);
                 }
                 else
                 {
-                    // Left
+                    // Right to Left
                     DisplayImage();
                 }
                 isSwiped = true;
@@ -230,7 +232,7 @@ namespace LivePhotoFrame.UWP.Views
 
         private bool displaying;
 
-        private async void DisplayImage()
+        private async void DisplayImage(bool previous = false)
         {
             //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
             if (displaying) return;
@@ -238,7 +240,7 @@ namespace LivePhotoFrame.UWP.Views
 
             try
             {
-                var stream = await provider.NextStream();
+                var stream = await (previous ? provider.PreviousStream() : provider.NextStream());
                 if (stream != null)
                 {
                     BitmapImage bitmapImage = new BitmapImage();
@@ -251,8 +253,9 @@ namespace LivePhotoFrame.UWP.Views
             catch (Exception e)
             {
                 totalIdleTime += config.Interval;
-                if (totalIdleTime >= maxIdleTime)
+                if (totalIdleTime >= config.MaxIdleTime)
                 {
+                    timer.Stop();
                     displayRequest.RequestRelease();
                     await ShowErrorDialog(e.Message);
                 }

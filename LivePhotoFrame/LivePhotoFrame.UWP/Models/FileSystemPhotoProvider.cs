@@ -44,14 +44,35 @@ namespace LivePhotoFrame.UWP.Models
         {
             if(files.Count > 0)
             {
-                var file = files[fileIndex];
-                var stream = await file.OpenReadAsync();
-
                 fileIndex++;
                 if (fileIndex >= files.Count)
                     fileIndex = 0;
+
                 //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
-                
+                IRandomAccessStreamWithContentType stream = await ReadStream();
+                return stream;
+            }
+
+            return null;
+        }
+
+        private async Task<IRandomAccessStreamWithContentType> ReadStream()
+        {
+            var file = files[fileIndex];
+            var stream = await file.OpenReadAsync();
+            return stream;
+        }
+
+        public async Task<IRandomAccessStream> PreviousStream()
+        {
+            if (files.Count > 0)
+            {
+                fileIndex--;
+                if (fileIndex == -1)
+                    fileIndex = files.Count - 1;
+
+                //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
+                IRandomAccessStreamWithContentType stream = await ReadStream();
                 return stream;
             }
 

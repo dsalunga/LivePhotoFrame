@@ -20,12 +20,18 @@ namespace LivePhotoFrame.UWP.Models
         /// </summary>
         public int Interval { get; set; }
 
+        /// <summary>
+        /// Maximum idle time in minutes to prevent image retention or burn-in on monitor.
+        /// </summary>
+        public int MaxIdleTime { get; set; }
+
         public AppConfig()
         {
             FtpConfig = new FtpConfig();
             FileSystemPath = @"D:\Pictures\LivePhotoFrame\Albums\Current\";
             ActiveSource = FtpPhotoProvider.TAG;
             Interval = 30;
+            MaxIdleTime = 60 * 4; // default to 4 hrs
         }
 
         public void Save()

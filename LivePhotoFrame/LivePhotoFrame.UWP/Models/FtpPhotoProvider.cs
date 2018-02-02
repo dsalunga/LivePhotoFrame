@@ -37,31 +37,52 @@ namespace LivePhotoFrame.UWP.Models
         {
             if (items.Length > 0)
             {
-                if (!client.IsConnected)
-                    client.Connect();
-
-                var file = items[fileIndex];
-                Stream stream = await client.OpenReadAsync(file.FullName);
-
-                // Create a .NET memory stream.
-                var memStream = new MemoryStream();
-
-                // Convert the stream to the memory stream, because a memory stream supports seeking.
-                await stream.CopyToAsync(memStream);
-
-                // Set the start position.
-                memStream.Position = 0;
-
                 fileIndex++;
                 if (fileIndex >= items.Length)
                     fileIndex = 0;
 
-                client.Disconnect();
-
+                MemoryStream memStream = await ReadStream();
                 return memStream.AsRandomAccessStream();
             }
 
             return null;
+        }
+
+        public async Task<IRandomAccessStream> PreviousStream()
+        {
+            if (items.Length > 0)
+            {
+                fileIndex--;
+                if (fileIndex == -1)
+                    fileIndex = items.Length - 1;
+
+                MemoryStream memStream = await ReadStream();
+                return memStream.AsRandomAccessStream();
+            }
+
+            return null;
+        }
+
+        private async Task<MemoryStream> ReadStream()
+        {
+            var file = items[fileIndex];
+
+            if (!client.IsConnected)
+                client.Connect();
+
+            Stream stream = await client.OpenReadAsync(file.FullName);
+
+            // Create a .NET memory stream.
+            var memStream = new MemoryStream();
+
+            // Convert the stream to the memory stream, because a memory stream supports seeking.
+            await stream.CopyToAsync(memStream);
+
+            // Set the start position.
+            memStream.Position = 0;
+
+            client.Disconnect();
+            return memStream;
         }
 
         public void Done()
