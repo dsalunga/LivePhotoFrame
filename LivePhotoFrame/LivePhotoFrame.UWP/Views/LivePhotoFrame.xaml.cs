@@ -264,9 +264,20 @@ namespace LivePhotoFrame.UWP.Views
             displaying = false;
         }
 
+        private DateTime lastDoubleTapped = DateTime.MinValue;
+
         private void LivePhotoFrame_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            GoBack();
+            // Must double-tap within 3 seconds
+            var now = DateTime.Now;
+            if (now.Subtract(lastDoubleTapped).TotalSeconds < 3)
+            {
+                lastDoubleTapped = DateTime.MinValue;
+                GoBack();
+            } else
+            {
+                lastDoubleTapped = now;
+            }
         }
 
         /*
