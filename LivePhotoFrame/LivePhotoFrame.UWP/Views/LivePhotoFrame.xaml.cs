@@ -194,11 +194,11 @@ namespace LivePhotoFrame.UWP.Views
                     break;
 
                 case VirtualKey.Left:
-                    DisplayImage(true);
+                    DisplayImage(true, true);
                     break;
 
                 case VirtualKey.Right:
-                    DisplayImage();
+                    DisplayImage(false, true);
                     break;
             }
         }
@@ -219,12 +219,12 @@ namespace LivePhotoFrame.UWP.Views
                 if (swipedDistance > 0)
                 {
                     // Left to Right
-                    DisplayImage(true);
+                    DisplayImage(true, true);
                 }
                 else
                 {
                     // Right to Left
-                    DisplayImage();
+                    DisplayImage(false, true);
                 }
                 isSwiped = true;
             }
@@ -232,7 +232,7 @@ namespace LivePhotoFrame.UWP.Views
 
         private bool displaying;
 
-        private async void DisplayImage(bool previous = false)
+        private async void DisplayImage(bool previous = false, bool restartTimer = false)
         {
             //var file = await StorageFile.GetFileFromPathAsync(@"D:\Pictures\LivePhotoFrame\Others\pigs.jpg");
             if (displaying) return;
@@ -249,6 +249,8 @@ namespace LivePhotoFrame.UWP.Views
                 }
 
                 totalIdleTime = 0;
+                if (restartTimer)
+                    timer.Start();
             }
             catch (Exception e)
             {
