@@ -97,6 +97,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DeviceHelpers.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Models\AppConfig.cs" />
     <Compile Include="Models\FileSystemPhotoProvider.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -128,6 +129,7 @@
     <None Include="LivePhotoFrame.UWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Notes.txt" />
     <Content Include="Properties\Default.rd.xml">
       <SubType>Designer</SubType>
     </Content>

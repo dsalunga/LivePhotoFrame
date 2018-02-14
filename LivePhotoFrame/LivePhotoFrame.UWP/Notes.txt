@@ -1,0 +1,9 @@
+﻿What to do next:
+* Repo navigator in Settings: Up one level, open a folder
+* Repo image list and click preview
+* CachePath config
+* Image caching: cache every loaded image, full caching
+* Stretch config: BestFit (use better algo), Tiled
+* SlideShowModel
+* AlbumModel
+* GalleryModel: represents an album collection

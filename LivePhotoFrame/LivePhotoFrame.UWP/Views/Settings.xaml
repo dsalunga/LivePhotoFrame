@@ -41,6 +41,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
         
@@ -69,6 +70,13 @@
                 <TextBox x:Name="txtMaxIdle" Header="Max Idle (minutes)" PlaceholderText="Max idle time in minutes" MaxHeight="120" />
                 <CheckBox x:Name="checkboxShuffle" Content="Shuffle" IsChecked="True" IsEnabled="False" />
                 <CheckBox x:Name="checkboxAutoStartShow" Content="Auto start show on app launch" IsChecked="False" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="4" Padding="10">
+                <TextBlock Text="Image Display Mode" MaxHeight="120" />
+                <RadioButton Name="radioImageUniform" Content="Uniform" GroupName="ImageDisplay" Tag="Uniform" Checked="ImageModeRadioGroup_Checked"/>
+                <RadioButton Name="radioImageUniformToFill" Content="Uniform To Fill" GroupName="ImageDisplay" Tag="UniformToFill" Checked="ImageModeRadioGroup_Checked" />
+                <RadioButton Name="radioImageBestFit" Content="Best Fit" GroupName="ImageDisplay" Tag="BestFit" Checked="ImageModeRadioGroup_Checked" />
             </StackPanel>
         </Grid>
     </ScrollViewer>

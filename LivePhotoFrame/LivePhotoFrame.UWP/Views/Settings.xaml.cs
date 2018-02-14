@@ -6,6 +6,7 @@ using LivePhotoFrame.Models;
 using LivePhotoFrame.ViewModels;
 using LivePhotoFrame.UWP.Models;
 using LivePhotoFrame.UWP.Helpers;
+using System;
 
 namespace LivePhotoFrame.UWP.Views
 {
@@ -44,6 +45,21 @@ namespace LivePhotoFrame.UWP.Views
                     radioFileSystem.IsChecked = true;
                     break;
             }
+
+            switch(config.ImageDisplayMode)
+            {
+                case ImageDisplayMode.Uniform:
+                    radioImageUniform.IsChecked = true;
+                    break;
+
+                case ImageDisplayMode.UniformToFill:
+                    radioImageUniformToFill.IsChecked = true;
+                    break;
+
+                case ImageDisplayMode.BestFit:
+                    radioImageBestFit.IsChecked = true;
+                    break;
+            }
 		}
 
 		private void SaveItem_Click(object sender, RoutedEventArgs e)
@@ -68,6 +84,13 @@ namespace LivePhotoFrame.UWP.Views
             RadioButton radioButton = (RadioButton)e.OriginalSource;
             var tag = radioButton.Tag.ToString();
             config.ActiveSource = tag;
+        }
+
+        private void ImageModeRadioGroup_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton radioButton = (RadioButton)e.OriginalSource;
+            var tag = radioButton.Tag.ToString();
+            config.ImageDisplayMode = Enum.Parse<ImageDisplayMode>(tag);
         }
     }
 }

@@ -8,6 +8,13 @@ using Windows.Storage;
 
 namespace LivePhotoFrame.UWP.Models
 {
+    public enum ImageDisplayMode
+    {
+        Uniform,
+        UniformToFill,
+        BestFit
+    }
+
     public class AppConfig
     {
         public FtpConfig FtpConfig { get; set; }
@@ -25,6 +32,8 @@ namespace LivePhotoFrame.UWP.Models
         /// </summary>
         public int MaxIdleTime { get; set; }
 
+        public ImageDisplayMode ImageDisplayMode { get; set; }
+
         public AppConfig()
         {
             FtpConfig = new FtpConfig();
@@ -32,6 +41,7 @@ namespace LivePhotoFrame.UWP.Models
             ActiveSource = FtpPhotoProvider.TAG;
             Interval = 30;
             MaxIdleTime = 60 * 4; // default to 4 hrs
+            ImageDisplayMode = ImageDisplayMode.BestFit;
         }
 
         public void Save()

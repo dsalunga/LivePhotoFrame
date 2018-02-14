@@ -1,4 +1,5 @@
-﻿using LivePhotoFrame.UWP.Models;
+﻿using LivePhotoFrame.UWP.Helpers;
+using LivePhotoFrame.UWP.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -140,6 +141,17 @@ namespace LivePhotoFrame.UWP.Views
 
             if (provider.Count > 0)
             {
+                switch (config.ImageDisplayMode)
+                {
+                    case ImageDisplayMode.Uniform:
+                        image.Stretch = Stretch.Uniform;
+                        break;
+
+                    case ImageDisplayMode.UniformToFill:
+                        image.Stretch = Stretch.UniformToFill;
+                        break;
+                }
+
                 DisplayImage();
 
                 timer = new DispatcherTimer();
@@ -245,6 +257,11 @@ namespace LivePhotoFrame.UWP.Views
                 {
                     BitmapImage bitmapImage = new BitmapImage();
                     await bitmapImage.SetSourceAsync(stream);
+
+                    if(config.ImageDisplayMode == ImageDisplayMode.BestFit)
+                    {
+                        image.Stretch = ImageHelper.IsPortrait(bitmapImage) ? Stretch.Uniform : Stretch.UniformToFill;
+                    }
                     image.Source = bitmapImage;
                 }
 

@@ -9,6 +9,6 @@
 
     <!-- Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" -->
     <Grid Background="Black">
-        <Image Name="image" Stretch="UniformToFill" VerticalAlignment="Top" HorizontalAlignment="Center" />
+        <Image Name="image" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Grid>
 </Page>
