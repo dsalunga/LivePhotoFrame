@@ -42,6 +42,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
         
@@ -77,6 +78,13 @@
                 <RadioButton Name="radioImageUniform" Content="Uniform" GroupName="ImageDisplay" Tag="Uniform" Checked="ImageModeRadioGroup_Checked"/>
                 <RadioButton Name="radioImageUniformToFill" Content="Uniform To Fill" GroupName="ImageDisplay" Tag="UniformToFill" Checked="ImageModeRadioGroup_Checked" />
                 <RadioButton Name="radioImageBestFit" Content="Best Fit" GroupName="ImageDisplay" Tag="BestFit" Checked="ImageModeRadioGroup_Checked" />
+                <CheckBox x:Name="checkboxSkipPortraits" Content="Skip Portraits" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="5" Padding="10">
+                <TextBlock Text="Image Caching" MaxHeight="120" />
+                <TextBox x:Name="txtCacheFolder" Header="Cache Path" IsReadOnly="True" MaxHeight="120" />
+                <TextBox x:Name="txtCacheSize" Header="Cache Size" IsReadOnly="True" MaxHeight="120" />
             </StackPanel>
         </Grid>
     </ScrollViewer>

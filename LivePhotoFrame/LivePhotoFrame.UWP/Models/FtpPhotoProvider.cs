@@ -20,6 +20,8 @@ namespace LivePhotoFrame.UWP.Models
 
         public int Count => items != null ? items.Length : 0;
 
+        public string CurrentFileName => items != null && items.Length > 0 ? items[fileIndex].Name : string.Empty;
+
         public const string TAG = "FTP";
 
         public async Task Initialize()
@@ -31,6 +33,8 @@ namespace LivePhotoFrame.UWP.Models
 
             items = await client.GetListingAsync(config.FtpConfig.Path);
             items.Shuffle();
+
+            await PhotoCacheManager.GetInstance().Prepare();
         }
 
         public async Task<IRandomAccessStream> NextStream()
@@ -41,8 +45,7 @@ namespace LivePhotoFrame.UWP.Models
                 if (fileIndex >= items.Length)
                     fileIndex = 0;
 
-                MemoryStream memStream = await ReadStream();
-                return memStream.AsRandomAccessStream();
+                return await ReadStream();
             }
 
             return null;
@@ -56,33 +59,37 @@ namespace LivePhotoFrame.UWP.Models
                 if (fileIndex == -1)
                     fileIndex = items.Length - 1;
 
-                MemoryStream memStream = await ReadStream();
-                return memStream.AsRandomAccessStream();
+                return await ReadStream();
             }
 
             return null;
         }
 
-        private async Task<MemoryStream> ReadStream()
+        private async Task<IRandomAccessStream> ReadStream()
         {
             var file = items[fileIndex];
+            // Check cache
+            var cache = await PhotoCacheManager.GetInstance().Read(file.Name);
+            if (cache != null)
+                return cache;
 
             if (!client.IsConnected)
                 client.Connect();
 
             Stream stream = await client.OpenReadAsync(file.FullName);
 
-            // Create a .NET memory stream.
-            var memStream = new MemoryStream();
-
             // Convert the stream to the memory stream, because a memory stream supports seeking.
+            var memStream = new MemoryStream();
             await stream.CopyToAsync(memStream);
+
+            // Save to cache
+            await PhotoCacheManager.GetInstance().Write(file.Name, memStream);
 
             // Set the start position.
             memStream.Position = 0;
 
             client.Disconnect();
-            return memStream;
+            return memStream.AsRandomAccessStream();
         }
 
         public void Done()

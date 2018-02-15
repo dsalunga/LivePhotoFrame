@@ -20,10 +20,11 @@ namespace LivePhotoFrame.UWP.Views
 			this.InitializeComponent();
 		}
 
-		protected override void OnNavigatedTo(NavigationEventArgs e)
+		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
 			base.OnNavigatedTo(e);
 
+            await PhotoCacheManager.GetInstance().Prepare();
             config = AppConfigManager.GetInstance().GetConfig();
 
             txtFtpHostname.Text = config.FtpConfig.Hostname;
@@ -33,9 +34,14 @@ namespace LivePhotoFrame.UWP.Views
             txtFileSystemPath.Text = config.FileSystemPath;
             txtInterval.Text = config.Interval.ToString();
             txtMaxIdle.Text = config.MaxIdleTime.ToString();
-            checkboxAutoStartShow.IsChecked = config.AutoStartShow;
+            
+            txtCacheFolder.Text = PhotoCacheManager.GetInstance().GetCacheFolder();
+            txtCacheSize.Text = (await PhotoCacheManager.GetInstance().GetCacheSize()).Item1;
 
-            switch(config.ActiveSource)
+            checkboxAutoStartShow.IsChecked = config.AutoStartShow;
+            checkboxSkipPortraits.IsChecked = config.SkipPortraits;
+
+            switch (config.ActiveSource)
             {
                 case FtpPhotoProvider.TAG:
                     radioFtp.IsChecked = true;
@@ -68,6 +74,7 @@ namespace LivePhotoFrame.UWP.Views
             config.Interval = int.Parse(txtInterval.Text.Trim());
             config.MaxIdleTime = int.Parse(txtMaxIdle.Text.Trim());
             config.AutoStartShow = checkboxAutoStartShow.IsChecked.Value;
+            config.SkipPortraits = checkboxSkipPortraits.IsChecked.Value;
 
             config.FtpConfig.Hostname = txtFtpHostname.Text.Trim();
             config.FtpConfig.Path = txtFtpPath.Text.Trim();

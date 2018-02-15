@@ -252,18 +252,31 @@ namespace LivePhotoFrame.UWP.Views
 
             try
             {
-                var stream = await (previous ? provider.PreviousStream() : provider.NextStream());
-                if (stream != null)
+                int portraitSkipped = 0;
+                do
                 {
-                    BitmapImage bitmapImage = new BitmapImage();
-                    await bitmapImage.SetSourceAsync(stream);
-
-                    if(config.ImageDisplayMode == ImageDisplayMode.BestFit)
+                    var stream = await (previous ? provider.PreviousStream() : provider.NextStream());
+                    if (stream != null)
                     {
-                        image.Stretch = ImageHelper.IsPortrait(bitmapImage) ? Stretch.Uniform : Stretch.UniformToFill;
+                        BitmapImage bitmapImage = new BitmapImage();
+                        await bitmapImage.SetSourceAsync(stream);
+
+                        if (config.SkipPortraits && ImageHelper.IsPortrait(bitmapImage))
+                        {
+                            Debug.WriteLine("Portrait skipped: " + provider.CurrentFileName);
+                            portraitSkipped++;
+                        }
+                        else
+                        {
+                            if (config.ImageDisplayMode == ImageDisplayMode.BestFit)
+                            {
+                                image.Stretch = ImageHelper.IsPortrait(bitmapImage) ? Stretch.Uniform : Stretch.UniformToFill;
+                            }
+                            image.Source = bitmapImage;
+                            portraitSkipped = 0;
+                        }
                     }
-                    image.Source = bitmapImage;
-                }
+                } while (portraitSkipped > 0 && portraitSkipped != provider.Count); // while aPhotoIsSkipped and notAllPhotosArePortrait
 
                 totalIdleTime = 0;
                 if (restartTimer)

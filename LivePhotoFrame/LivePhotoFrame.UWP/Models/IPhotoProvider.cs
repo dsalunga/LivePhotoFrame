@@ -12,6 +12,8 @@ namespace LivePhotoFrame.UWP.Models
 
         Task<IRandomAccessStream> PreviousStream();
 
+        string CurrentFileName { get; }
+
         void Done();
     }
 }

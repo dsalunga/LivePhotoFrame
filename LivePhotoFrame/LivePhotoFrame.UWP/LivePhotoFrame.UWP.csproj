@@ -105,6 +105,8 @@
     </Compile>
     <Compile Include="Models\FtpPhotoProvider.cs" />
     <Compile Include="Models\IPhotoProvider.cs" />
+    <Compile Include="Models\PhotoAlbum.cs" />
+    <Compile Include="Models\PhotoCacheManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>

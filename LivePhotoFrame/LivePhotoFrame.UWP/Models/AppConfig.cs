@@ -22,6 +22,8 @@ namespace LivePhotoFrame.UWP.Models
         public string ActiveSource { get; set; }
         public bool AutoStartShow { get; set; }
 
+        public bool SkipPortraits { get; set; }
+
         /// <summary>
         /// Interval in minutes
         /// </summary>
@@ -88,13 +90,8 @@ namespace LivePhotoFrame.UWP.Models
         }
     }
 
-    public class FtpConfig
+    public class FtpConfig : RepositoryConnection
     {
-        public string Hostname { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Path { get; set; }
-
         public FtpConfig()
         {
             Hostname = "ftp.yourserver.com";
@@ -102,5 +99,13 @@ namespace LivePhotoFrame.UWP.Models
             Username = "yourusername";
             Password = "yourpassword";
         }
+    }
+
+    public class RepositoryConnection
+    {
+        public string Hostname { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Path { get; set; }
     }
 }

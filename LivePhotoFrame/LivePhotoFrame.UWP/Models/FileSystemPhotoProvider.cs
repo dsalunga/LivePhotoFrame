@@ -17,6 +17,10 @@ namespace LivePhotoFrame.UWP.Models
         List<StorageFile> files;
         int fileIndex = 0;
 
+        public int Count => files != null ? files.Count : 0;
+
+        public string CurrentFileName => files != null && files.Count > 0 ? files[fileIndex].Name : string.Empty;
+
         public FileSystemPhotoProvider()
         {
         }
@@ -30,14 +34,6 @@ namespace LivePhotoFrame.UWP.Models
             var storageFiles = await folder.GetFilesAsync();
             files = new List<StorageFile>(storageFiles);
             files.Shuffle();
-        }
-
-        public int Count
-        {
-            get
-            {
-                return files.Count;
-            }
         }
 
         public async Task<IRandomAccessStream> NextStream()
