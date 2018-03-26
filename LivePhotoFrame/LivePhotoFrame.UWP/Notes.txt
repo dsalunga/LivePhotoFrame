@@ -1,4 +1,5 @@
 ﻿What to do next:
+* Import and export config json
 * Repo navigator in Settings: Up one level, open a folder
 * Repo image list and click preview
 * Image caching: full caching
@@ -6,3 +7,5 @@
 * SlideShowModel
 * AlbumModel
 * GalleryModel: represents an album collection
+* Playlist concept - the current queue of albums and individual photos for playback in the device. User can add/remove albums/items
+	and should take effect in realtime.
