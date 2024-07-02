@@ -1,0 +1,97 @@
+﻿<Page
+    x:Class="LivePhotoFrame.UWP.Views.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{StaticResource PrimaryColor}">
+
+    <Page.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,10"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,10"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+        <Style TargetType="RadioButton">
+            <Setter Property="Margin" Value="0,10"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="0,10"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Grid.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition/>
+                </TransitionCollection>
+            </Grid.ChildrenTransitions>
+        
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+        
+            <Border  Grid.Row="0" Background="{StaticResource PrimaryColor}" Padding="10">
+                <TextBlock x:Name="txtTitle" Text="Settings" VerticalAlignment="Center" FontSize="28" Foreground="White"/>
+            </Border>
+
+            <StackPanel Grid.Row="1" Padding="10">
+                <TextBlock Text="FTP Server" MaxHeight="120" />
+                <TextBox x:Name="txtFtpHostname" Header="Hostname" PlaceholderText="Hostname" MaxHeight="120" />
+                <TextBox x:Name="txtFtpPath" Header="Path" PlaceholderText="Path" MaxHeight="120" />
+                <TextBox x:Name="txtUsername" Header="Username" PlaceholderText="Username" MaxHeight="120" />
+                <TextBox x:Name="txtPassword" Header="Password" PlaceholderText="Password" MaxHeight="120" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Padding="10">
+                <TextBlock Text="File System" MaxHeight="120" />
+                <TextBox x:Name="txtFileSystemPath" Header="Path" PlaceholderText="Album directory path" MaxHeight="120" />
+            </StackPanel>
+        
+            <StackPanel Grid.Row="3" Padding="10">
+                <TextBlock Text="Active Source" MaxHeight="120" />
+                <RadioButton Name="radioFtp" Content="FTP" GroupName="ActiveSource" Tag="FTP" Checked="ActiveSourceRadioButton_Checked"/>
+                <RadioButton Name="radioFileSystem" Content="File System" GroupName="ActiveSource" Tag="FileSystem" Checked="ActiveSourceRadioButton_Checked" />
+                <TextBox x:Name="txtInterval" Header="Interval (minutes)" PlaceholderText="Interval in minutes" MaxHeight="120" />
+                <TextBox x:Name="txtMaxIdle" Header="Max Idle (minutes)" PlaceholderText="Max idle time in minutes" MaxHeight="120" />
+                <CheckBox x:Name="checkboxShuffle" Content="Shuffle" IsChecked="True" IsEnabled="False" />
+                <CheckBox x:Name="checkboxAutoStartShow" Content="Auto start show on app launch" IsChecked="False" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="4" Padding="10">
+                <TextBlock Text="Image Display Mode" MaxHeight="120" />
+                <RadioButton Name="radioImageUniform" Content="Uniform" GroupName="ImageDisplay" Tag="Uniform" Checked="ImageModeRadioGroup_Checked"/>
+                <RadioButton Name="radioImageUniformToFill" Content="Uniform To Fill" GroupName="ImageDisplay" Tag="UniformToFill" Checked="ImageModeRadioGroup_Checked" />
+                <RadioButton Name="radioImageBestFit" Content="Best Fit" GroupName="ImageDisplay" Tag="BestFit" Checked="ImageModeRadioGroup_Checked" />
+                <CheckBox x:Name="checkboxSkipPortraits" Content="Skip Portraits" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="5" Padding="10">
+                <TextBlock Text="Image Caching" MaxHeight="120" />
+                <TextBox x:Name="txtCacheFolder" Header="Cache Path" IsReadOnly="True" MaxHeight="120" />
+                <TextBox x:Name="txtCacheSize" Header="Cache Size" IsReadOnly="True" MaxHeight="120" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="Save" Icon="Save" Click="SaveItem_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

@@ -1,6 +1,6 @@
 # LivePhotoFrame
 
-Have you ever wondered why you are dumping GBs of memories into your hard drives? Are you ever going to view them again, and how often?
+Have you ever wondered why you are dumping gigabytes of memories onto your hard drives? Will you ever view them again, and if so, how often?
 
 ### Supported image sources ###
 
