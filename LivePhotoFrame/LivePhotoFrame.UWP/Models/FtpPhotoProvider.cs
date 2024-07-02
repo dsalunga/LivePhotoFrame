@@ -31,7 +31,7 @@ namespace LivePhotoFrame.UWP.Models
             client = new FtpClient(config.FtpConfig.Hostname, config.FtpConfig.Username, config.FtpConfig.Password);
             client.Connect();
 
-            items = await client.GetListingAsync(config.FtpConfig.Path);
+            items = client.GetListing(config.FtpConfig.Path);
             items.Shuffle();
 
             await PhotoCacheManager.GetInstance().Prepare();
@@ -76,7 +76,7 @@ namespace LivePhotoFrame.UWP.Models
             if (!client.IsConnected)
                 client.Connect();
 
-            Stream stream = await client.OpenReadAsync(file.FullName);
+            Stream stream = client.OpenRead(file.FullName);
 
             // Convert the stream to the memory stream, because a memory stream supports seeking.
             var memStream = new MemoryStream();

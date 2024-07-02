@@ -1,4 +1,13 @@
-﻿using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.Windows.AppLifecycle;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,124 +16,74 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using LivePhotoFrame.UWP;
+
+// To learn more about WinUI, the WinUI project structure,
+// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace LivePhotoFrame.UWP
 {
-	/// <summary>
-	/// Provides application-specific behavior to supplement the default Application class.
-	/// </summary>
-	sealed partial class App : Application
-	{
-		/// <summary>
-		/// Initializes the singleton application object.  This is the first line of authored code
-		/// executed, and as such is the logical equivalent of main() or WinMain().
-		/// </summary>
-		public App()
-		{
-			this.InitializeComponent();
-			this.Suspending += OnSuspending;
-		}
+    /// <summary>
+    /// Provides application-specific behavior to supplement the default Application class.
+    /// </summary>
+    public partial class App : Application
+    {
+        /// <summary>
+        /// Initializes the singleton application object.  This is the first line of authored code
+        /// executed, and as such is the logical equivalent of main() or WinMain().
+        /// </summary>
+        public App()
+        {
+            this.InitializeComponent();
+        }
 
-		/// <summary>
-		/// Invoked when the application is launched normally by the end user.  Other entry points
-		/// will be used such as when the application is launched to open a specific file.
-		/// </summary>
-		/// <param name="e">Details about the launch request and process.</param>
-		protected override void OnLaunched(LaunchActivatedEventArgs e)
-		{
-			Frame rootFrame = Window.Current.Content as Frame;
+        /// <summary>
+        /// Invoked when the application is launched normally by the end user.  Other entry points
+        /// will be used such as when the application is launched to open a specific file.
+        /// </summary>
+        /// <param name="args">Details about the launch request and process.</param>
+        protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs e)
+        {
+            // TODO This code defaults the app to a single instance app. If you need multi instance app, remove this part.
+            // Read: https://docs.microsoft.com/en-us/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/guides/applifecycle#single-instancing-in-applicationonlaunched
+            // If this is the first instance launched, then register it as the "main" instance.
+            // If this isn't the first instance launched, then "main" will already be registered,
+            // so retrieve it.
+            var mainInstance = Microsoft.Windows.AppLifecycle.AppInstance.FindOrRegisterForKey("main");
+            var activatedEventArgs = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs();
 
-			// Do not repeat app initialization when the Window already has content,
-			// just ensure that the window is active
-			if (rootFrame == null)
-			{
-				// Create a Frame to act as the navigation context and navigate to the first page
-				rootFrame = new Frame();
-				rootFrame.NavigationFailed += OnNavigationFailed;
-				rootFrame.Navigated += OnNavigated;
+            // If the instance that's executing the OnLaunched handler right now
+            // isn't the "main" instance.
+            if (!mainInstance.IsCurrent)
+            {
+                // Redirect the activation (and args) to the "main" instance, and exit.
+                await mainInstance.RedirectActivationToAsync(activatedEventArgs);
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                return;
+            }
 
-				LivePhotoFrame.App.Initialize();
+            // TODO This code handles app activation types. Add any other activation kinds you want to handle.
+            // Read: https://docs.microsoft.com/en-us/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/guides/applifecycle#file-type-association
+            if (activatedEventArgs.Kind == ExtendedActivationKind.File)
+            {
+                OnFileActivated(activatedEventArgs);
+            }
 
-				if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-				{
-					//TODO: Load state from previously suspended application
-				}
+            // Initialize MainWindow here
+            Window = new MainWindow();
+            Window.Activate();
+            WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(Window);
+        }
 
-				// Place the frame in the current Window
-				Window.Current.Content = rootFrame;
+        // TODO This is an example method for the case when app is activated through a file.
+        // Feel free to remove this if you do not need this.
+        public void OnFileActivated(AppActivationArguments activatedEventArgs)
+        {
 
-				SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
-				SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-					rootFrame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
-			}
+        }
 
-			if (e.PrelaunchActivated == false)
-			{
-				if (rootFrame.Content == null)
-				{
-					// When the navigation stack isn't restored navigate to the first page,
-					// configuring the new page by passing required information as a navigation
-					// parameter
-					rootFrame.Navigate(typeof(Views.MainPivot), e.Arguments);
-				}
+        public static MainWindow Window { get; private set; }
 
-                ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
-
-                // Ensure the current window is active
-                Window.Current.Activate();
-			}
-		}
-
-		private void OnBackRequested(object sender, BackRequestedEventArgs e)
-		{
-			Frame rootFrame = Window.Current.Content as Frame;
-
-			if (rootFrame.CanGoBack)
-			{
-				e.Handled = true;
-				rootFrame.GoBack();
-			}
-		}
-
-		private void OnNavigated(object sender, NavigationEventArgs e)
-		{
-			Frame rootFrame = sender as Frame;
-
-			SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-				rootFrame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
-		}
-
-		/// <summary>
-		/// Invoked when Navigation to a certain page fails
-		/// </summary>
-		/// <param name="sender">The Frame which failed navigation</param>
-		/// <param name="e">Details about the navigation failure</param>
-		void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
-		{
-			throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
-		}
-
-		/// <summary>
-		/// Invoked when application execution is being suspended.  Application state is saved
-		/// without knowing whether the application will be terminated or resumed with the contents
-		/// of memory still intact.
-		/// </summary>
-		/// <param name="sender">The source of the suspend request.</param>
-		/// <param name="e">Details about the suspend request.</param>
-		private void OnSuspending(object sender, SuspendingEventArgs e)
-		{
-			var deferral = e.SuspendingOperation.GetDeferral();
-			//TODO: Save application state and stop any background activity
-			deferral.Complete();
-		}
-	}
+        public static IntPtr WindowHandle { get; private set; }
+    }
 }

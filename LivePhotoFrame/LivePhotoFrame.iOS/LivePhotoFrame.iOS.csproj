@@ -9,6 +9,7 @@
     <RootNamespace>LivePhotoFrame.iOS</RootNamespace>
     <AssemblyName>LivePhotoFrame.iOS</AssemblyName>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,6 +79,9 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <AppExtensionDebugBundleId />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -85,8 +89,8 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Plugin.Share" Version="7.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Plugin.Share" Version="7.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
@@ -171,7 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LivePhotoFrame\LivePhotoFrame.csproj">
-      <Project>{F9AADC0B-0776-4D88-8C9E-D9BD2CB4BD7C}</Project>
+      <Project>{8b7ae02e-cec3-4cb3-9fa9-d8f53d357e0d}</Project>
       <Name>LivePhotoFrame</Name>
     </ProjectReference>
   </ItemGroup>

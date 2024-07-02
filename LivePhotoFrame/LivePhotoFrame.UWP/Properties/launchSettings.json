@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "LivePhotoFrame.UWP (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "LivePhotoFrame.UWP (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

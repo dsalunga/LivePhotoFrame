@@ -13,18 +13,19 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.System;
+using Microsoft.Windows.System;
 using Windows.System.Display;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -48,14 +49,14 @@ namespace LivePhotoFrame.UWP.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 1);
+            App.Window.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 1);
         }
 
         private void GoBack()
         {
             // Detatch from key inputs event
             //Window.Current.CoreWindow.CharacterReceived -= CoreWindow_CharacterReceived;
-            Window.Current.CoreWindow.KeyUp -= CoreWindow_KeyUp;
+            App.Window.CoreWindow.KeyUp -= CoreWindow_KeyUp;
 
             if (timer != null)
                 timer.Stop();
@@ -71,17 +72,18 @@ namespace LivePhotoFrame.UWP.Views
         {
             base.OnNavigatedTo(e);
 
+            // TODO Windows.UI.ViewManagement.ApplicationView is no longer supported. Use Microsoft.UI.Windowing.AppWindow instead. For more details see https://docs.microsoft.com/en-us/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/guides/windowing
             if (!ApplicationView.GetForCurrentView().IsFullScreenMode)
                 ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 
-            Window.Current.CoreWindow.PointerCursor = null;
+            App.Window.CoreWindow.PointerCursor = null;
 
             this.DoubleTapped += LivePhotoFrame_DoubleTapped;
             //this.Tapped += LivePhotoFrame_Tapped;
 
             // Attach to key inputs event
             //Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
-            Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
+            App.Window.CoreWindow.KeyUp += CoreWindow_KeyUp;
 
             this.ManipulationDelta += LivePhotoFrame_ManipulationDelta;
             this.ManipulationCompleted += LivePhotoFrame_ManipulationCompleted;

@@ -1,19 +1,18 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePhotoFrame.Android", "LivePhotoFrame\LivePhotoFrame.Android\LivePhotoFrame.Android.csproj", "{2825FF80-1031-41F5-8802-657A400CFDF4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePhotoFrame.iOS", "LivePhotoFrame\LivePhotoFrame.iOS\LivePhotoFrame.iOS.csproj", "{1E2F9841-FC77-4A82-82AF-F1B2799EB718}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePhotoFrame.UWP", "LivePhotoFrame\LivePhotoFrame.UWP\LivePhotoFrame.UWP.csproj", "{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LivePhotoFrame.UWP", "LivePhotoFrame\LivePhotoFrame.UWP\LivePhotoFrame.UWP.csproj", "{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LivePhotoFrame", "LivePhotoFrame\LivePhotoFrame\LivePhotoFrame.csproj", "{8B7AE02E-CEC3-4CB3-9FA9-D8F53D357E0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePhotoFrame.WebApp", "LivePhotoFrame.WebApp\LivePhotoFrame.WebApp.csproj", "{8B44D33D-2446-4057-9464-FB6BBAB4E816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LivePhotoFrame.WebApp", "LivePhotoFrame.WebApp\LivePhotoFrame.WebApp.csproj", "{8B44D33D-2446-4057-9464-FB6BBAB4E816}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePhotoFrame.ReactJs", "LivePhotoFrame.ReactJs\LivePhotoFrame.ReactJs.csproj", "{7A97B23F-1E99-453D-B4D7-90877ECFBF38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LivePhotoFrame.ReactJs", "LivePhotoFrame.ReactJs\LivePhotoFrame.ReactJs.csproj", "{7A97B23F-1E99-453D-B4D7-90877ECFBF38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,7 +71,6 @@ Global
 		{1E2F9841-FC77-4A82-82AF-F1B2799EB718}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{1E2F9841-FC77-4A82-82AF-F1B2799EB718}.Debug|iPhone.Build.0 = Debug|iPhone
 		{1E2F9841-FC77-4A82-82AF-F1B2799EB718}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{1E2F9841-FC77-4A82-82AF-F1B2799EB718}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
 		{1E2F9841-FC77-4A82-82AF-F1B2799EB718}.Debug|x64.ActiveCfg = Debug|iPhone
 		{1E2F9841-FC77-4A82-82AF-F1B2799EB718}.Debug|x86.ActiveCfg = Debug|iPhone
 		{1E2F9841-FC77-4A82-82AF-F1B2799EB718}.Release|Any CPU.ActiveCfg = Release|iPhone
@@ -89,6 +87,8 @@ Global
 		{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}.Debug|ARM.Deploy.0 = Debug|ARM
 		{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}.Debug|iPhone.ActiveCfg = Debug|x86
 		{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}.Debug|iPhoneSimulator.ActiveCfg = Debug|x86
+		{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}.Debug|iPhoneSimulator.Build.0 = Debug|x86
+		{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}.Debug|iPhoneSimulator.Deploy.0 = Debug|x86
 		{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}.Debug|x64.ActiveCfg = Debug|x64
 		{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}.Debug|x64.Build.0 = Debug|x64
 		{5514BD8B-53D2-4BA3-A46D-1DAB3144DB98}.Debug|x64.Deploy.0 = Debug|x64
