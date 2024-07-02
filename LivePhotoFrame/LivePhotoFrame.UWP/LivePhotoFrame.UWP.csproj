@@ -179,7 +179,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.1" />
     <PackageReference Include="Newtonsoft.Json">
-      <Version>10.0.3</Version>
+      <Version>13.0.2</Version>
     </PackageReference>
     <PackageReference Include="Plugin.Share" Version="7.0.1" />
   </ItemGroup>
