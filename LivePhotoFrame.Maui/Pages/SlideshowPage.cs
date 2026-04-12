@@ -75,13 +75,63 @@ public partial class SlideshowPage : ContentPage
         // Keep screen on via DeviceDisplay
         DeviceDisplay.Current.KeepScreenOn = true;
 #endif
+
+        // Keyboard input for desktop platforms
+        RegisterKeyboardHandlers();
     }
+
+    private void RegisterKeyboardHandlers()
+    {
+#if WINDOWS
+        var nativeView = this.Handler?.PlatformView as Microsoft.UI.Xaml.UIElement;
+        if (nativeView is not null)
+        {
+            nativeView.KeyDown += OnNativeKeyDown;
+        }
+#endif
+    }
+
+    private void UnregisterKeyboardHandlers()
+    {
+#if WINDOWS
+        var nativeView = this.Handler?.PlatformView as Microsoft.UI.Xaml.UIElement;
+        if (nativeView is not null)
+        {
+            nativeView.KeyDown -= OnNativeKeyDown;
+        }
+#endif
+    }
+
+#if WINDOWS
+    private void OnNativeKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Windows.System.VirtualKey.Right:
+            case Windows.System.VirtualKey.Down:
+            case Windows.System.VirtualKey.Space:
+                DisplayPhoto(previous: false, restartTimer: true);
+                e.Handled = true;
+                break;
+            case Windows.System.VirtualKey.Left:
+            case Windows.System.VirtualKey.Up:
+                DisplayPhoto(previous: true, restartTimer: true);
+                e.Handled = true;
+                break;
+            case Windows.System.VirtualKey.Escape:
+                Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync(".."));
+                e.Handled = true;
+                break;
+        }
+    }
+#endif
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
         _timer?.Stop();
         _provider?.Dispose();
+        UnregisterKeyboardHandlers();
 
 #if WINDOWS || MACCATALYST
         DeviceDisplay.Current.KeepScreenOn = false;

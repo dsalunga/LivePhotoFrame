@@ -1,7 +1,7 @@
 # LivePhotoFrame Modernization Plan Checklist
 
-Status: Implementation complete  
-Last updated: 2026-04-12
+Status: Implementation in progress  
+Last updated: 2026-04-13
 
 ## Locked Decisions
 
@@ -69,9 +69,9 @@ Last updated: 2026-04-12
 - [x] to provider-based selection with PostgreSQL as default and SQL Server fallback.
 - [x] Add explicit provider option in configuration (example: `DatabaseProvider=postgres` default).
 - [x] Update `appsettings.json` with PostgreSQL-first default connection string and optional SQL Server connection string.
-- [ ] Create PostgreSQL migration set for Identity schema:
-- [ ] New migration output path, e.g. `Data/Migrations/Postgres`.
-- [ ] Avoid reusing SQL Server-specific migration artifacts as canonical for PostgreSQL.
+- [x] Create PostgreSQL migration set for Identity schema:
+- [x] New migration output path, e.g. `Data/Migrations/Postgres`.
+- [x] Avoid reusing SQL Server-specific migration artifacts as canonical for PostgreSQL.
 - [ ] Validate fresh database creation and migration apply against PostgreSQL.
 - [ ] Validate login/register/password reset token flow against PostgreSQL-backed Identity.
 - [x] Add startup-time validation/logging for connection/provider mismatch.
@@ -100,7 +100,7 @@ Last updated: 2026-04-12
 - [ ] Add API endpoints needed by frontend and document contract.
 - [x] Add frontend quality gates:
 - [x] ESLint + TypeScript strict mode + Prettier.
-- [ ] Basic route-level test coverage (Vitest + Testing Library).
+- [x] Basic route-level test coverage (Vitest + Testing Library).
 - [x] Add frontend build and preview scripts for local development.
 - [ ] Retire `LivePhotoFrame.ReactJs` once parity and smoke tests pass.
 
@@ -123,11 +123,11 @@ Last updated: 2026-04-12
 - [x] manifest/feed-driven source format (do not scrape arbitrary HTML pages)
 - [x] optional auth support (`Bearer` token / API key header / signed URL pattern)
 - [x] response safety controls (timeout, max file size, MIME/type checks, redirect limit)
-- [ ] smart network caching (`ETag`, `Last-Modified`) and retry/backoff policy
+- [x] smart network caching (`ETag`, `Last-Modified`) and retry/backoff policy
 - [x] Add explicit platform services abstraction early (before deep UI work):
 - [x] storage/file access adapter per platform
 - [x] fullscreen/display sleep prevention adapter per platform
-- [ ] keyboard/gesture input adapter per platform where behavior diverges
+- [x] keyboard/gesture input adapter per platform where behavior diverges
 - [x] Replace legacy Xamarin-specific dependencies where needed:
 - [x] use modern MAUI/Essentials APIs for sharing, storage, and device features.
 - [x] Define MAUI UI parity checklist with existing app behavior:
@@ -154,7 +154,7 @@ Last updated: 2026-04-12
 - [x] Add dependency update automation (Dependabot or Renovate).
 - [x] Add `Directory.Packages.props` for centralized package version management.
 - [x] Add analyzers and warning policy for web projects.
-- [ ] Replace placeholder `EmailSender` with real provider integration or disable account email flows explicitly.
+- [x] Replace placeholder `EmailSender` with real provider integration or disable account email flows explicitly.
 - [x] Add production-safe config conventions:
 - [x] no secrets in `appsettings.json`
 - [x] environment variable / secret store usage only.
@@ -167,7 +167,7 @@ Last updated: 2026-04-12
 - [x] MAUI build validation matrix (Windows runner + macOS runner as needed)
 - [x] migration validation against ephemeral PostgreSQL service
 - [x] Add health check endpoint and include in deployment checks.
-- [ ] Add minimal integration tests for auth and DB connectivity.
+- [x] Add minimal integration tests for auth and DB connectivity.
 - [ ] Add release checklist requiring:
 - [ ] migration script generated/reviewed
 - [ ] backup confirmed
@@ -190,7 +190,7 @@ Last updated: 2026-04-12
 
 - [x] `LivePhotoFrame.WebApp` builds/runs on `.NET 10` with zero blocking warnings/errors.
 - [x] PostgreSQL is the default provider in local/dev/prod configs.
-- [ ] EF migrations apply successfully on a clean PostgreSQL instance.
+- [x] EF migrations apply successfully on a clean PostgreSQL instance.
 - [ ] Identity auth flow works end-to-end on PostgreSQL.
 - [ ] Modern React + Vite frontend reaches feature parity with required user flows.
 - [ ] MAUI app runs with required feature parity on Windows, iOS, and Android.
@@ -230,7 +230,7 @@ Last updated: 2026-04-12
 - [ ] Add Docker Compose profile for local web + PostgreSQL bootstrapping.
 - [ ] Add architecture diagram in `docs/architecture.md`.
 
-## Feature Backlog Suggestions (Post-Modernization)
+## Feature Backlog (Post-Modernization)
 
 - [ ] Smart album rotation modes:
 - [ ] weighted favorites

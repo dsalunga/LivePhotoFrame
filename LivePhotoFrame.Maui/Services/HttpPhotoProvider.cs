@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using LivePhotoFrame.Maui.Models;
 
@@ -7,6 +8,7 @@ namespace LivePhotoFrame.Maui.Services;
 /// <summary>
 /// Provides photos from an HTTP/HTTPS manifest endpoint.
 /// HTTPS is required by default; plain HTTP requires explicit opt-in.
+/// Supports ETag/Last-Modified caching and retry with exponential backoff.
 /// </summary>
 public class HttpPhotoProvider : IPhotoProvider
 {
@@ -14,6 +16,12 @@ public class HttpPhotoProvider : IPhotoProvider
     private HttpClient _httpClient = new();
     private List<string> _imageUrls = [];
     private int _index;
+
+    // Cache: URL -> (ETag, LastModified, CachedBytes)
+    private readonly Dictionary<string, CacheEntry> _cache = new();
+
+    private const int MaxRetries = 3;
+    private static readonly TimeSpan InitialBackoff = TimeSpan.FromSeconds(1);
 
     public int Count => _imageUrls.Count;
     public string CurrentFileName => _imageUrls.Count > 0 ? Path.GetFileName(new Uri(_imageUrls[_index]).AbsolutePath) : string.Empty;
@@ -51,7 +59,7 @@ public class HttpPhotoProvider : IPhotoProvider
             throw new InvalidOperationException(
                 "Plain HTTP is not allowed. Set AllowInsecureHttp=true for trusted LAN sources.");
 
-        var response = await _httpClient.GetAsync(manifestUrl);
+        var response = await SendWithRetryAsync(() => new HttpRequestMessage(HttpMethod.Get, manifestUrl));
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync();
@@ -87,7 +95,30 @@ public class HttpPhotoProvider : IPhotoProvider
     private async Task<Stream> DownloadImageAsync()
     {
         var url = _imageUrls[_index];
-        var response = await _httpClient.GetAsync(url);
+
+        var response = await SendWithRetryAsync(() =>
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            // Add conditional headers from cache
+            if (_cache.TryGetValue(url, out var entry))
+            {
+                if (entry.ETag is not null)
+                    request.Headers.IfNoneMatch.Add(new EntityTagHeaderValue(entry.ETag));
+                if (entry.LastModified.HasValue)
+                    request.Headers.IfModifiedSince = entry.LastModified.Value;
+            }
+
+            return request;
+        });
+
+        // Return cached version on 304 Not Modified
+        if (response.StatusCode == HttpStatusCode.NotModified && _cache.TryGetValue(url, out var cached))
+        {
+            var memStream = new MemoryStream(cached.Data);
+            return memStream;
+        }
+
         response.EnsureSuccessStatusCode();
 
         // Validate content type
@@ -95,10 +126,54 @@ public class HttpPhotoProvider : IPhotoProvider
         if (!contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException($"Unexpected content type: {contentType}");
 
-        var memStream = new MemoryStream();
-        await response.Content.CopyToAsync(memStream);
-        memStream.Position = 0;
-        return memStream;
+        var data = await response.Content.ReadAsByteArrayAsync();
+
+        // Update cache with ETag/Last-Modified
+        var etag = response.Headers.ETag?.ToString();
+        var lastModified = response.Content.Headers.LastModified;
+        if (etag is not null || lastModified.HasValue)
+        {
+            _cache[url] = new CacheEntry(etag, lastModified, data);
+        }
+
+        return new MemoryStream(data);
+    }
+
+    /// <summary>
+    /// Sends an HTTP request with retry and exponential backoff on transient failures.
+    /// </summary>
+    private async Task<HttpResponseMessage> SendWithRetryAsync(Func<HttpRequestMessage> requestFactory)
+    {
+        var backoff = InitialBackoff;
+        for (int attempt = 0; ; attempt++)
+        {
+            var request = requestFactory();
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+
+                // Retry on server errors (5xx) and 429 Too Many Requests
+                if (attempt < MaxRetries && ((int)response.StatusCode >= 500 || response.StatusCode == HttpStatusCode.TooManyRequests))
+                {
+                    response.Dispose();
+                    await Task.Delay(backoff);
+                    backoff *= 2;
+                    continue;
+                }
+
+                return response;
+            }
+            catch (HttpRequestException) when (attempt < MaxRetries)
+            {
+                await Task.Delay(backoff);
+                backoff *= 2;
+            }
+            catch (TaskCanceledException) when (attempt < MaxRetries)
+            {
+                await Task.Delay(backoff);
+                backoff *= 2;
+            }
+        }
     }
 
     public void Dispose()
@@ -115,4 +190,6 @@ public class HttpPhotoProvider : IPhotoProvider
             (list[k], list[n]) = (list[n], list[k]);
         }
     }
+
+    private sealed record CacheEntry(string? ETag, DateTimeOffset? LastModified, byte[] Data);
 }

@@ -23,7 +23,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
 });
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    // Email confirmation disabled — EmailSender is a no-op placeholder.
+    // Replace EmailSender with a real provider (SendGrid, SMTP, etc.) before enabling.
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+})
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -64,3 +70,6 @@ app.MapFallbackToController(
     controller: "Home");
 
 app.Run();
+
+// Make the implicit Program class public so test projects can reference it
+public partial class Program { }
