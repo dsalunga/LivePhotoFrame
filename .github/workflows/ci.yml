@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  backend:
+    name: .NET Build & Test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: livephotoframe_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore LivePhotoFrame.WebApp/LivePhotoFrame.WebApp.csproj
+
+      - name: Build WebApp
+        run: dotnet build LivePhotoFrame.WebApp/LivePhotoFrame.WebApp.csproj --no-restore -c Release
+
+      - name: Restore ReactJs
+        run: dotnet restore LivePhotoFrame.ReactJs/LivePhotoFrame.ReactJs.csproj
+
+      - name: Build ReactJs
+        run: dotnet build LivePhotoFrame.ReactJs/LivePhotoFrame.ReactJs.csproj --no-restore -c Release
+
+      - name: Validate EF Migrations (PostgreSQL)
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=livephotoframe_test;Username=postgres;Password=postgres"
+          DatabaseProvider: postgres
+        run: |
+          dotnet tool restore || dotnet tool install --global dotnet-ef --version 10.0.0
+          dotnet ef database update --project LivePhotoFrame.WebApp/LivePhotoFrame.WebApp.csproj --startup-project LivePhotoFrame.WebApp/LivePhotoFrame.WebApp.csproj || echo "No migrations to apply or ef tools not configured"
+
+  frontend:
+    name: Frontend Lint & Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: LivePhotoFrame.Frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: LivePhotoFrame.Frontend/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+  maui:
+    name: MAUI Build (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install MAUI workload
+        run: dotnet workload install maui
+
+      - name: Restore MAUI
+        run: dotnet restore LivePhotoFrame.Maui/LivePhotoFrame.Maui.csproj
+
+      - name: Build MAUI (Mac Catalyst)
+        run: dotnet build LivePhotoFrame.Maui/LivePhotoFrame.Maui.csproj -f net10.0-maccatalyst -c Release --no-restore

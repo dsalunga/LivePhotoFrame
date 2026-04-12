@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LivePhotoFrame.Maui.Pages.SettingsPage"
+             Title="Settings">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <!-- Photo Source -->
+            <Label Text="Photo Source" FontSize="20" FontAttributes="Bold" />
+            <Picker x:Name="pickerSource" Title="Source Type">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>FTP</x:String>
+                        <x:String>FileSystem</x:String>
+                        <x:String>Http</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <!-- FTP Settings -->
+            <Label Text="FTP Server" FontSize="18" FontAttributes="Bold" />
+            <Entry x:Name="entryFtpHost" Placeholder="Hostname" />
+            <Entry x:Name="entryFtpPath" Placeholder="Path" />
+            <Entry x:Name="entryFtpUser" Placeholder="Username" />
+            <Entry x:Name="entryFtpPass" Placeholder="Password" IsPassword="True" />
+
+            <!-- File System Settings -->
+            <Label Text="File System" FontSize="18" FontAttributes="Bold" />
+            <Entry x:Name="entryFsPath" Placeholder="Album directory path" />
+
+            <!-- HTTP Settings -->
+            <Label Text="HTTP Source" FontSize="18" FontAttributes="Bold" />
+            <Entry x:Name="entryHttpManifestUrl" Placeholder="Manifest / feed URL" />
+
+            <!-- Display Settings -->
+            <Label Text="Display" FontSize="18" FontAttributes="Bold" />
+            <Label Text="Interval (minutes)" />
+            <Entry x:Name="entryInterval" Placeholder="5" Keyboard="Numeric" />
+            <Label Text="Max Idle (minutes)" />
+            <Entry x:Name="entryMaxIdle" Placeholder="60" Keyboard="Numeric" />
+
+            <Label Text="Image Display Mode" FontSize="18" FontAttributes="Bold" />
+            <Picker x:Name="pickerDisplayMode" Title="Display Mode">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Uniform</x:String>
+                        <x:String>UniformToFill</x:String>
+                        <x:String>BestFit</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <HorizontalStackLayout Spacing="8">
+                <CheckBox x:Name="chkShuffle" IsChecked="True" />
+                <Label Text="Shuffle" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="8">
+                <CheckBox x:Name="chkSkipPortraits" />
+                <Label Text="Skip Portraits" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="8">
+                <CheckBox x:Name="chkAutoStart" />
+                <Label Text="Auto start slideshow on launch" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <Button Text="Save" Clicked="OnSaveClicked" />
+            <Button Text="Start Slideshow" Clicked="OnStartClicked" BackgroundColor="Green" TextColor="White" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

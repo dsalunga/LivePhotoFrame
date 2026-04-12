@@ -1,25 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using LivePhotoFrame.WebApp.Data;
+using LivePhotoFrame.WebApp.Models;
+using LivePhotoFrame.WebApp.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
-namespace LivePhotoFrame.WebApp
+var builder = WebApplication.CreateBuilder(args);
+
+// Database provider selection: "postgres" (default) or "sqlserver"
+var databaseProvider = builder.Configuration["DatabaseProvider"] ?? "postgres";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    public class Program
+    if (databaseProvider.Equals("sqlserver", StringComparison.OrdinalIgnoreCase))
     {
-        public static void Main(string[] args)
-        {
-            BuildWebHost(args).Run();
-        }
-
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+        options.UseSqlServer(connectionString);
     }
+    else
+    {
+        options.UseNpgsql(connectionString);
+    }
+});
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddControllersWithViews();
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>("database");
+
+var app = builder.Build();
+
+// Log the active database provider at startup
+app.Logger.LogInformation("Database provider: {Provider}", databaseProvider);
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHealthChecks("/healthz");
+
+app.MapFallbackToController(
+    action: "Index",
+    controller: "Home");
+
+app.Run();

@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentFTP" Version="50.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Plugin.Share" Version="7.1.1" />
+    <PackageReference Include="FluentFTP" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Plugin.Share" />
   </ItemGroup>
 
 </Project>
