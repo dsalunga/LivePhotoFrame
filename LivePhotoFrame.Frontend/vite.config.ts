@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  base: '/app/',
   plugins: [react()],
   build: {
     outDir: '../LivePhotoFrame.WebApp/wwwroot/app',
@@ -10,9 +11,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://localhost:5001',
+        target: 'http://localhost:5142',
         changeOrigin: true,
-        secure: false,
       },
     },
   },

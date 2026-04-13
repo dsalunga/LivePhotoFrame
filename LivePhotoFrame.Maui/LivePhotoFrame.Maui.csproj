@@ -45,6 +45,9 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+
+		<!-- Allow minor Xcode skew on local/CI images until SDK/Xcode channels align. -->
+		<ValidateXcodeVersion>false</ValidateXcodeVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -69,6 +72,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="FluentFTP" />
+		<PackageReference Include="SixLabors.ImageSharp" />
 		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
 	</ItemGroup>
 

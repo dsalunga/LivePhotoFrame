@@ -1,7 +1,24 @@
 # LivePhotoFrame Modernization Plan Checklist
 
-Status: Implementation in progress  
+Status: Implementation in progress (post-fix validation refreshed)  
 Last updated: 2026-04-13
+
+## Validation Snapshot (2026-04-13)
+
+- `dotnet build LivePhotoFrame.WebApp` succeeds with `0` warnings / `0` errors.
+- `dotnet test LivePhotoFrame.WebApp.Tests` passes (`3` tests).
+- `dotnet build LivePhotoFrame.ReactJs` succeeds with `0` warnings / `0` errors.
+- Frontend quality checks pass (`npm run lint`, `npm run test`, `npm run build`).
+- Frontend runtime integration is fixed:
+- `/app` and `/app/index.html` load successfully from `LivePhotoFrame.WebApp`.
+- Vite assets resolve from `/app/assets/*` (served correctly by backend static files).
+- `/api/SampleData/WeatherForecasts` is now served by `LivePhotoFrame.WebApp`.
+- PostgreSQL migrations apply successfully (including against a clean DB instance).
+- Health endpoint behavior is validated:
+- returns `200` when PostgreSQL is reachable and migrated.
+- returns `503` when DB dependency is unavailable (expected readiness behavior).
+- `dotnet build LivePhotoFrame.Maui -f net10.0-maccatalyst -c Release` succeeds after clean restore/build.
+- CI workflow remains manual-only (`workflow_dispatch`) per policy; automatic PR/scheduled triggers are intentionally disabled.
 
 ## Locked Decisions
 
@@ -69,10 +86,10 @@ Last updated: 2026-04-13
 - [x] to provider-based selection with PostgreSQL as default and SQL Server fallback.
 - [x] Add explicit provider option in configuration (example: `DatabaseProvider=postgres` default).
 - [x] Update `appsettings.json` with PostgreSQL-first default connection string and optional SQL Server connection string.
-- [x] Create PostgreSQL migration set for Identity schema:
-- [x] New migration output path, e.g. `Data/Migrations/Postgres`.
-- [x] Avoid reusing SQL Server-specific migration artifacts as canonical for PostgreSQL.
-- [ ] Validate fresh database creation and migration apply against PostgreSQL.
+- [ ] Create PostgreSQL migration set for Identity schema:
+- [ ] New migration output path, e.g. `Data/Migrations/Postgres`.
+- [ ] Avoid reusing SQL Server-specific migration artifacts as canonical for PostgreSQL.
+- [x] Validate fresh database creation and migration apply against PostgreSQL.
 - [ ] Validate login/register/password reset token flow against PostgreSQL-backed Identity.
 - [x] Add startup-time validation/logging for connection/provider mismatch.
 
@@ -97,7 +114,7 @@ Last updated: 2026-04-13
 - [x] Decommission old server-side SPA middleware in `LivePhotoFrame.ReactJs`:
 - [x] remove `Microsoft.AspNetCore.SpaServices` dependency.
 - [x] remove webpack/MSBuild first-run hooks tied to old toolchain.
-- [ ] Add API endpoints needed by frontend and document contract.
+- [x] Add API endpoints needed by frontend and document contract (`docs/frontend-api-contract.md`).
 - [x] Add frontend quality gates:
 - [x] ESLint + TypeScript strict mode + Prettier.
 - [x] Basic route-level test coverage (Vitest + Testing Library).
@@ -124,10 +141,10 @@ Last updated: 2026-04-13
 - [x] optional auth support (`Bearer` token / API key header / signed URL pattern)
 - [x] response safety controls (timeout, max file size, MIME/type checks, redirect limit)
 - [x] smart network caching (`ETag`, `Last-Modified`) and retry/backoff policy
-- [x] Add explicit platform services abstraction early (before deep UI work):
-- [x] storage/file access adapter per platform
-- [x] fullscreen/display sleep prevention adapter per platform
-- [x] keyboard/gesture input adapter per platform where behavior diverges
+- [ ] Add explicit platform services abstraction early (before deep UI work):
+- [ ] storage/file access adapter per platform
+- [ ] fullscreen/display sleep prevention adapter per platform
+- [ ] keyboard/gesture input adapter per platform where behavior diverges
 - [x] Replace legacy Xamarin-specific dependencies where needed:
 - [x] use modern MAUI/Essentials APIs for sharing, storage, and device features.
 - [x] Define MAUI UI parity checklist with existing app behavior:
@@ -151,9 +168,9 @@ Last updated: 2026-04-13
 ## Phase 6: Security, Dependency, and Maintenance Improvements
 
 - [x] Address vulnerable dependency graph in `LivePhotoFrame.WebApp` by moving to aligned 10.x package set.
-- [x] Add dependency update automation (Dependabot or Renovate).
+- [ ] Add dependency update automation (Dependabot or Renovate).
 - [x] Add `Directory.Packages.props` for centralized package version management.
-- [x] Add analyzers and warning policy for web projects.
+- [ ] Add analyzers and warning policy for web projects.
 - [x] Replace placeholder `EmailSender` with real provider integration or disable account email flows explicitly.
 - [x] Add production-safe config conventions:
 - [x] no secrets in `appsettings.json`
@@ -172,6 +189,7 @@ Last updated: 2026-04-13
 - [ ] migration script generated/reviewed
 - [ ] backup confirmed
 - [ ] rollback steps validated.
+- [x] Keep CI/manual validation available via `workflow_dispatch` while auto/scheduled triggers are disabled by policy.
 
 ## Phase 8: Legacy Decommission and Consolidation
 
@@ -195,8 +213,8 @@ Last updated: 2026-04-13
 - [ ] Modern React + Vite frontend reaches feature parity with required user flows.
 - [ ] MAUI app runs with required feature parity on Windows, iOS, and Android.
 - [ ] macOS Catalyst passes quality gate; otherwise fallback workstream is approved and tracked.
-- [x] `HTTP/HTTPS` source works end-to-end with secure defaults (`HTTPS` on, `HTTP` opt-in).
-- [x] CI validates backend + frontend + migration checks on every PR.
+- [ ] `HTTP/HTTPS` source works end-to-end with secure defaults (`HTTPS` on, `HTTP` opt-in).
+- [ ] CI validates backend + frontend + migration checks on every PR.
 
 ## Risks and Mitigations
 

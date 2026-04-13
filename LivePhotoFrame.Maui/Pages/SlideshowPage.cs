@@ -145,8 +145,10 @@ public partial class SlideshowPage : ContentPage
 
         try
         {
-            int portraitSkipped = 0;
-            do
+            var displayed = false;
+            var portraitSkipped = 0;
+
+            while (!displayed && portraitSkipped < _provider.Count)
             {
                 using var stream = await (previous
                     ? _provider.PreviousStreamAsync()
@@ -158,20 +160,41 @@ public partial class SlideshowPage : ContentPage
                 await stream.CopyToAsync(memStream);
                 memStream.Position = 0;
 
-                var source = ImageSource.FromStream(() => memStream);
+                var isPortrait = TryIsPortrait(memStream, out var portrait);
+                if (isPortrait)
+                {
+                    isPortrait = portrait;
+                }
+                else
+                {
+                    isPortrait = false;
+                }
 
-                // Determine if portrait (simple heuristic - not available without decode on MAUI;
-                // skip-portrait uses filename hint from provider)
-                photoImage.Source = source;
+                if (_config.SkipPortraits && isPortrait)
+                {
+                    portraitSkipped++;
+                    continue;
+                }
+
+                var imageBytes = memStream.ToArray();
+                photoImage.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
                 photoImage.Aspect = _config.ImageDisplayMode switch
                 {
+                    ImageDisplayMode.Uniform => Aspect.AspectFit,
                     ImageDisplayMode.UniformToFill => Aspect.AspectFill,
+                    ImageDisplayMode.BestFit => isPortrait ? Aspect.AspectFit : Aspect.AspectFill,
                     _ => Aspect.AspectFit,
                 };
 
-                portraitSkipped = 0; // Displayed successfully
+                displayed = true;
             }
-            while (portraitSkipped > 0 && portraitSkipped < _provider.Count);
+
+            if (!displayed && _config.SkipPortraits && portraitSkipped >= _provider.Count)
+            {
+                await DisplayAlertAsync("No photos to display", "All photos are portrait and 'Skip Portraits' is enabled.", "OK");
+                await Shell.Current.GoToAsync("..");
+                return;
+            }
 
             _totalIdleMinutes = 0;
             if (restartTimer && _timer is not null)
@@ -192,5 +215,29 @@ public partial class SlideshowPage : ContentPage
         }
 
         _displaying = false;
+    }
+
+    private static bool TryIsPortrait(Stream stream, out bool isPortrait)
+    {
+        isPortrait = false;
+        if (!stream.CanSeek) return false;
+
+        try
+        {
+            stream.Position = 0;
+            var info = SixLabors.ImageSharp.Image.Identify(stream);
+            if (info is null) return false;
+
+            isPortrait = info.Height > info.Width;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            stream.Position = 0;
+        }
     }
 }

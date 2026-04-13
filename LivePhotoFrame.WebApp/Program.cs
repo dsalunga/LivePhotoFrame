@@ -7,19 +7,24 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Database provider selection: "postgres" (default) or "sqlserver"
-var databaseProvider = builder.Configuration["DatabaseProvider"] ?? "postgres";
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var databaseProvider = (builder.Configuration["DatabaseProvider"] ?? "postgres").ToLowerInvariant();
+var connectionStringName = databaseProvider == "sqlserver" ? "SqlServerConnection" : "DefaultConnection";
+var connectionString = builder.Configuration.GetConnectionString(connectionStringName)
+    ?? throw new InvalidOperationException($"Connection string '{connectionStringName}' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    if (databaseProvider.Equals("sqlserver", StringComparison.OrdinalIgnoreCase))
+    if (databaseProvider == "sqlserver")
     {
         options.UseSqlServer(connectionString);
     }
-    else
+    else if (databaseProvider == "postgres")
     {
         options.UseNpgsql(connectionString);
+    }
+    else
+    {
+        throw new InvalidOperationException($"Unsupported DatabaseProvider '{databaseProvider}'. Expected 'postgres' or 'sqlserver'.");
     }
 });
 
@@ -64,6 +69,14 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHealthChecks("/healthz");
+
+// Serve Vite SPA from /app
+app.MapGet("/app", context =>
+{
+    context.Response.Redirect("/app/index.html");
+    return Task.CompletedTask;
+});
+app.MapFallbackToFile("/app/{*path:nonfile}", "/app/index.html");
 
 app.MapFallbackToController(
     action: "Index",

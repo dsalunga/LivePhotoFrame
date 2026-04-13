@@ -61,7 +61,7 @@ jobs:
           DatabaseProvider: postgres
         run: |
           dotnet tool restore || dotnet tool install --global dotnet-ef --version 10.0.0
-          dotnet ef database update --project LivePhotoFrame.WebApp/LivePhotoFrame.WebApp.csproj --startup-project LivePhotoFrame.WebApp/LivePhotoFrame.WebApp.csproj || echo "No migrations to apply or ef tools not configured"
+          dotnet ef database update --project LivePhotoFrame.WebApp/LivePhotoFrame.WebApp.csproj --startup-project LivePhotoFrame.WebApp/LivePhotoFrame.WebApp.csproj
 
   frontend:
     name: Frontend Lint & Build

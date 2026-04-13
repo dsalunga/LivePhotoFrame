@@ -17,6 +17,7 @@
     <PackageVersion Include="FluentFTP" Version="50.1.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="Plugin.Share" Version="7.1.1" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
 
     <!-- Analyzers -->
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />

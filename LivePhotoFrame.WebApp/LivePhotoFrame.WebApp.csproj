@@ -2,7 +2,9 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <!-- Legacy Identity scaffold code generates extensive nullable warnings. -->
+    <Nullable>disable</Nullable>
+    <NoWarn>$(NoWarn);CS0618;MVC1000</NoWarn>
     <UserSecretsId>aspnet-LivePhotoFrame.WebApp-14E01A88-0841-4430-8C67-0ED48F28956A</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
