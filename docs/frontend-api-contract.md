@@ -6,6 +6,7 @@ Last updated: 2026-04-13
 
 - Frontend static build is served by `LivePhotoFrame.WebApp` at `/app`.
 - SPA deep-link fallback is handled at `/app/{*path}` to `/app/index.html`.
+- `FetchData` route supports URL paging parity: `/app/fetchdata/:startDateIndex?`.
 
 ## Endpoints Used by Frontend
 

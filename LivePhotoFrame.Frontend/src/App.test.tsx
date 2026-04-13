@@ -22,18 +22,19 @@ describe('App routing', () => {
     expect(screen.getByRole('heading', { name: 'Counter' })).toBeInTheDocument();
   });
 
-  it('renders FetchData page at /fetchdata', async () => {
+  it('renders FetchData page at /fetchdata/10', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({
       ok: true,
       json: async () => [],
     } as Response);
 
     render(
-      <MemoryRouter initialEntries={['/fetchdata']}>
+      <MemoryRouter initialEntries={['/fetchdata/10']}>
         <App />
       </MemoryRouter>,
     );
-    expect(await screen.findByRole('heading', { name: 'Weather Forecast' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Weather forecast' })).toBeInTheDocument();
+    expect(globalThis.fetch).toHaveBeenCalledWith('/api/SampleData/WeatherForecasts?startDateIndex=10');
     vi.restoreAllMocks();
   });
 });

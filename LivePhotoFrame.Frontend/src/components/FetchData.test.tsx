@@ -1,6 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import FetchData from './FetchData';
+
+function renderAt(path: string) {
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <Routes>
+        <Route path="/fetchdata/:startDateIndex?" element={<FetchData />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+}
 
 describe('FetchData', () => {
   beforeEach(() => {
@@ -9,7 +20,8 @@ describe('FetchData', () => {
 
   it('shows loading state initially', () => {
     vi.spyOn(globalThis, 'fetch').mockReturnValue(new Promise(() => {}));
-    render(<FetchData />);
+    renderAt('/fetchdata/10');
+    expect(globalThis.fetch).toHaveBeenCalledWith('/api/SampleData/WeatherForecasts?startDateIndex=10');
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
@@ -22,9 +34,11 @@ describe('FetchData', () => {
       json: async () => data,
     } as Response);
 
-    render(<FetchData />);
+    renderAt('/fetchdata/5');
     await waitFor(() => expect(screen.getByText('Mild')).toBeInTheDocument());
     expect(screen.getByText('20')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Previous' })).toHaveAttribute('href', '/fetchdata/0');
+    expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute('href', '/fetchdata/10');
   });
 
   it('shows empty message on fetch error', async () => {
@@ -33,7 +47,7 @@ describe('FetchData', () => {
       status: 500,
     } as Response);
 
-    render(<FetchData />);
+    renderAt('/fetchdata');
     await waitFor(() =>
       expect(screen.getByText(/No data available/)).toBeInTheDocument(),
     );

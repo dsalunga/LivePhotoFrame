@@ -49,12 +49,6 @@ jobs:
       - name: Run Integration Tests
         run: dotnet test LivePhotoFrame.WebApp.Tests/LivePhotoFrame.WebApp.Tests.csproj -c Release --no-build --verbosity normal
 
-      - name: Restore ReactJs
-        run: dotnet restore LivePhotoFrame.ReactJs/LivePhotoFrame.ReactJs.csproj
-
-      - name: Build ReactJs
-        run: dotnet build LivePhotoFrame.ReactJs/LivePhotoFrame.ReactJs.csproj --no-restore -c Release
-
       - name: Validate EF Migrations (PostgreSQL)
         env:
           ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=livephotoframe_test;Username=postgres;Password=postgres"

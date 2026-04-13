@@ -22,14 +22,15 @@ LivePhotoFrame is a multi-project photo slideshow app that helps you turn your a
 - `LivePhotoFrame/LivePhotoFrame.iOS`: Xamarin iOS app.
 - `LivePhotoFrame/LivePhotoFrame.UWP`: original UWP project.
 - `LivePhotoFrame.UWPv2`: newer UWP variant.
-- `LivePhotoFrame.WebApp`: ASP.NET Core MVC web app (`net8.0`).
-- `LivePhotoFrame.ReactJs`: ASP.NET Core + React app (`net8.0` + webpack).
+- `LivePhotoFrame.WebApp`: ASP.NET Core MVC web app (`net10.0`) serving the frontend from `/app`.
+- `LivePhotoFrame.Frontend`: React + TypeScript + Vite frontend (active web UI).
+- `LivePhotoFrame.ReactJs`: legacy ASP.NET Core + React + webpack project (kept for historical reference, not part of active build pipeline).
 
 ## Prerequisites
 
-- `.NET SDK 8+` (tested with SDK `10.0.103` for build compatibility checks).
-- `Node.js + npm` (required for `LivePhotoFrame.ReactJs`).
-- `SQL Server / LocalDB` for `LivePhotoFrame.WebApp` identity database.
+- `.NET SDK 10+` (tested with SDK `10.0.103`).
+- `Node.js + npm` (required for `LivePhotoFrame.Frontend`).
+- PostgreSQL (default) or SQL Server (fallback) for `LivePhotoFrame.WebApp` identity database.
 - For native app targets:
   - Windows + Visual Studio (UWP tooling) for `LivePhotoFrame.UWPv2` / `LivePhotoFrame.UWP`.
   - Xamarin workloads for `LivePhotoFrame.Android` and `LivePhotoFrame.iOS`.
@@ -54,16 +55,25 @@ dotnet run
 
 The launch profile defaults to `http://localhost:5142` in development.
 
-### 3) Build and run the React app
+### 3) Build the active frontend (Vite)
 
 ```bash
-cd LivePhotoFrame.ReactJs
-npm install
-dotnet build
-dotnet run
+cd LivePhotoFrame.Frontend
+npm ci
+npm run build
 ```
 
-`dotnet build` will trigger the first-run webpack build when `wwwroot/dist` is missing.
+This writes static assets to `LivePhotoFrame.WebApp/wwwroot/app`.
+
+### 4) Optional frontend dev server
+
+```bash
+cd LivePhotoFrame.Frontend
+npm ci
+npm run dev
+```
+
+The dev server proxies `/api` requests to `http://localhost:5142`.
 
 ## Configuration Notes
 
@@ -88,18 +98,22 @@ Default placeholders include:
 
 ### Web app database
 
-`LivePhotoFrame.WebApp/appsettings.json` uses LocalDB by default:
+`LivePhotoFrame.WebApp/appsettings.json` defaults to PostgreSQL:
 
 ```json
-"DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=aspnet-LivePhotoFrame.WebApp-...;Trusted_Connection=True;MultipleActiveResultSets=true"
+"DatabaseProvider": "postgres",
+"ConnectionStrings": {
+  "DefaultConnection": "Host=localhost;Port=5432;Database=livephotoframe;Username=postgres;Password=postgres",
+  "SqlServerConnection": "Server=(localdb)\\mssqllocaldb;Database=aspnet-LivePhotoFrame.WebApp-...;Trusted_Connection=True;MultipleActiveResultSets=true"
+}
 ```
 
-If you are not on Windows/LocalDB, replace it with a reachable SQL Server connection string.
+Set `DatabaseProvider=sqlserver` to use the SQL Server fallback connection.
 
 ## Troubleshooting
 
-- `Cannot find module .../node_modules/webpack/bin/webpack.js`  
-  Run `npm install` inside `LivePhotoFrame.ReactJs`.
+- Frontend assets missing under `/app`  
+  Run `npm ci && npm run build` inside `LivePhotoFrame.Frontend`.
 - `Xamarin.Android.CSharp.targets` or `Xamarin.iOS.CSharp.targets` not found  
   Install Xamarin workloads and build through Visual Studio with Xamarin support.
 - `Microsoft.Windows.UI.Xaml.CSharp.targets` not found  

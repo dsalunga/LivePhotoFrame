@@ -7,7 +7,7 @@ Last updated: 2026-04-13
 
 - `dotnet build LivePhotoFrame.WebApp` succeeds with `0` warnings / `0` errors.
 - `dotnet test LivePhotoFrame.WebApp.Tests` passes (`3` tests).
-- `dotnet build LivePhotoFrame.ReactJs` succeeds with `0` warnings / `0` errors.
+- `LivePhotoFrame.ReactJs` is now legacy-only and removed from active solution/CI build paths.
 - Frontend quality checks pass (`npm run lint`, `npm run test`, `npm run build`).
 - Frontend runtime integration is fixed:
 - `/app` and `/app/index.html` load successfully from `LivePhotoFrame.WebApp`.
@@ -119,7 +119,7 @@ Last updated: 2026-04-13
 - [x] ESLint + TypeScript strict mode + Prettier.
 - [x] Basic route-level test coverage (Vitest + Testing Library).
 - [x] Add frontend build and preview scripts for local development.
-- [ ] Retire `LivePhotoFrame.ReactJs` once parity and smoke tests pass.
+- [x] Retire `LivePhotoFrame.ReactJs` once parity and smoke tests pass.
 
 ## Phase 5: Native Modernization Now (.NET MAUI)
 
